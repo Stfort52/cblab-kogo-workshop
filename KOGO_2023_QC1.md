@@ -20,7 +20,7 @@ library(ggplot2)
 Set the path to load or save data.
 
 ``` r
-rdatadir = 'F:/KOGO2022/github/QC/'
+rdatadir = '/home/data/'
 ```
 
 ### **Load Data**
