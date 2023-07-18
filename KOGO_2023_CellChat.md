@@ -132,8 +132,6 @@ cellchat_covid <- aggregateNet(cellchat_covid)
 
 # Compute centrality
 cellchat_covid <- netAnalysis_computeCentrality(cellchat_covid, slot.name = "netP")
-
-cellchat_covid <- readRDS('../KOGO_CellChat/cellchat_covid.rds')
 ```
 
 ### **Visualization**
