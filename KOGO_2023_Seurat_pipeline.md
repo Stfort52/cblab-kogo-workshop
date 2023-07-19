@@ -18,7 +18,7 @@ sce
 ```
 
     ## class: SingleCellExperiment 
-    ## dim: 36604 14066 
+    ## dim: 36604 24389 
     ## metadata(10): Samples Samples ... Samples Samples
     ## assays(1): counts
     ## rownames(36604): MIR1302-2HG FAM138A ... Htag2 Htag3
@@ -38,7 +38,7 @@ seurat
 ```
 
     ## An object of class Seurat 
-    ## 36604 features across 14066 samples within 1 assay 
+    ## 36604 features across 24389 samples within 1 assay 
     ## Active assay: RNA (36604 features, 0 variable features)
 
 ### **Normalization**
