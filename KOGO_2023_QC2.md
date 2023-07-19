@@ -90,19 +90,19 @@ p <- ggplot(data.frame(colData(sce)), aes(x = log10_sum)) +
   geom_histogram() +
   theme_bw() +
   geom_vline(xintercept = log10(umi), color="red", linetype="dashed")
-ggsave(filename = paste0(rdatadir, 'log10_sum.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'log10_sum.png'), plot = p)
 
 p <- ggplot(data.frame(colData(sce)), aes(x = subsets_MT_percent)) + 
   geom_histogram() +
   theme_bw() +
   geom_vline(xintercept = mtpct, color="red", linetype="dashed")
-ggsave(filename = paste0(rdatadir, 'subsets_MT_percent.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'subsets_MT_percent.png'), plot = p)
 
 p <- ggplot(data.frame(colData(sce)), aes(x = detected)) + 
   geom_histogram() +
   theme_bw() +
   geom_vline(xintercept = mtpct, color="red", linetype="dashed")
-ggsave(filename = paste0(rdatadir, 'detected.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'detected.png'), plot = p)
 ```
 
 Low-quality cells are filtered out and can be identified by the PCA
@@ -122,7 +122,7 @@ sce$use <- (
 )
 
 p <- plotReducedDim(sce, dimred="PCA_coldata", colour_by="use")
-ggsave(filename = paste0(rdatadir, 'PCA_coldata.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'PCA_coldata.png'), plot = p)
 ```
 
 ``` r
