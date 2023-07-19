@@ -94,7 +94,7 @@ for (i in 1:length(rawsce_list)) {
   p <- p + geom_hline(yintercept=metadata(br.out)$knee, color="dodgerblue", linetype="dashed")
   p <- p + geom_hline(yintercept=min(metadata(br.out)$inflection), color="forestgreen", linetype="dashed")
 
-  ggsave(filename = paste0(rdatadir, 'DropletUtils_', rawsce_list[i], '.png'), plot = p)
+  ggsave(filename = paste0(ranaldir, 'DropletUtils_', rawsce_list[i], '.png'), plot = p)
   
   colnames(rawsce) = colData(rawsce)$Barcode
   rawsce <- rawsce[,which(e.out$FDR <= 0.05)]
