@@ -144,7 +144,8 @@ preprocess <- function(sce){
   sce <- addPerCellQC(
     sce,
     subsets = list(MT=mtgenes),
-    percent_top = c(50, 100, 200, 500)
+    percent_top = c(50, 100, 200, 500), 
+    detection_limit = 5
   )
   
   sce$log10_sum = log10(sce$sum + 1)
