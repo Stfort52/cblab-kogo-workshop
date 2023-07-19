@@ -89,12 +89,12 @@ seurat <- FindClusters(seurat,
 
     ## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
     ## 
-    ## Number of nodes: 14066
-    ## Number of edges: 456256
+    ## Number of nodes: 24389
+    ## Number of edges: 777229
     ## 
     ## Running Louvain algorithm...
-    ## Maximum modularity in 10 random starts: 0.9043
-    ## Number of communities: 14
+    ## Maximum modularity in 10 random starts: 0.9098
+    ## Number of communities: 17
     ## Elapsed time: 1 seconds
 
 ``` r
@@ -193,13 +193,6 @@ my_breaks <- c(seq(min(scaledExprs), 0,
                seq(max(scaledExprs)/palette_length,
                    max(scaledExprs),
                    length.out=floor(palette_length/2)))
-
-pheatmap(scaledExprs,
-         cluster_cols = T, cluster_rows = F, clustering_method = "ward.D2",
-         treeheight_col = 0,
-         breaks = my_breaks, color=my_color,
-         labels_row = as.expression(lapply(rownames(scaledExprs), function(a) bquote(italic(.(a))))),
-         angle_col = 315)
 ```
 
 ![](KOGO_Seurat_pipeline_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
