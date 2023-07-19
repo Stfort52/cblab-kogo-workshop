@@ -274,7 +274,7 @@ table(sce$library)
 
     ## 
     ##   L1  L12   L2   L3   L4   L5   L6   L7   L8   L9 
-    ## 3837 4589 3766 3249 1529 1985  589  907 2678 1260
+    ## 1823 3293 2166 1835  833 1350  324  419 1345  678
 
 ``` r
 sce$Condition <- 'SYMPTOMATIC'
@@ -286,7 +286,7 @@ table(sce$Condition)
 
     ## 
     ## ASYMPTOMATIC      CONTROL  SYMPTOMATIC 
-    ##         4103         4589        15697
+    ##         2507         3293        8266
 
 ### **Reference**
 
