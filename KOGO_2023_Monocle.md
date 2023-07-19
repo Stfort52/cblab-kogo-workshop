@@ -27,7 +27,7 @@ monocle. This dataset has various celltypes including T cell.
 load(paste0(rdatadir, 'seurat.RData'))
 
 p <- DimPlot(seurat, group.by = 'celltype',label=T)
-ggsave(filename = paste0(rdatadir, 'dimplot.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'dimplot.png'), plot = p)
 ```
 
 Since we will draw trajectory graph of T cell, extract the T cell
@@ -86,7 +86,7 @@ cds <- monocle::clusterCells(cds)
 
 ``` r
 p <- monocle::plot_cell_clusters(cds, color = "Cluster")
-ggsave(filename = paste0(rdatadir, 'monocle_cluster.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'monocle_cluster.png'), plot = p)
 ```
 
 ### **Constructing Single Cell Trajectories**
@@ -107,9 +107,9 @@ cds <- reduceDimension(cds, num_dim = 15, method = 'DDRTree')
 
 cds <- orderCells(cds)
 p <- plot_cell_trajectory(cds, color_by = "Cluster")
-ggsave(filename = paste0(rdatadir, 'monocle_Cluster.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'monocle_Cluster.png'), plot = p)
 p <- plot_cell_trajectory(cds, color_by = "Pseudotime")
-ggsave(filename = paste0(rdatadir, 'monocle_Pseudotime.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'monocle_Pseudotime.png'), plot = p)
 ```
 
 ### **Finding Genes that Change as a Function of Pseudotime**
@@ -169,13 +169,13 @@ significantly with pseudotime.
 
 ``` r
 p <- plot_genes_in_pseudotime(cds[c('MKI67', 'TOP2A', 'STMN1'),])
-ggsave(filename = paste0(rdatadir, 'monocle_proliferating.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'monocle_proliferating.png'), plot = p)
 
 p <- plot_genes_in_pseudotime(cds[c('CCR7', 'IL7R'),])
-ggsave(filename = paste0(rdatadir, 'monocle_naive.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'monocle_naive.png'), plot = p)
 
 p <- plot_genes_in_pseudotime(cds[c('PDCD1', 'CTLA4', 'LAG3', 'TIGIT'),])
-ggsave(filename = paste0(rdatadir, 'monocle_exhausted.png'), plot = p)
+ggsave(filename = paste0(ranaldir, 'monocle_exhausted.png'), plot = p)
 ```
 
 ### **Reference**
