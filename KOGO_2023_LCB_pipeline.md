@@ -14,6 +14,7 @@ library(ggplot2)
 ```
 
 ``` r
+load('/home/data/sce.RData')
 sce
 ```
 
