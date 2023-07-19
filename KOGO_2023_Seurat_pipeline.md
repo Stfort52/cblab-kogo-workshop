@@ -14,11 +14,12 @@ library(ggplot2)
 ```
 
 ``` r
+load('/home/data/sce.RData')
 sce
 ```
 
     ## class: SingleCellExperiment 
-    ## dim: 36604 24389 
+    ## dim: 36604 14066 
     ## metadata(10): Samples Samples ... Samples Samples
     ## assays(1): counts
     ## rownames(36604): MIR1302-2HG FAM138A ... Htag2 Htag3
@@ -89,7 +90,7 @@ seurat <- FindClusters(seurat,
 
     ## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
     ## 
-    ## Number of nodes: 24389
+    ## Number of nodes: 14066
     ## Number of edges: 777229
     ## 
     ## Running Louvain algorithm...
