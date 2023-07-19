@@ -88,7 +88,6 @@ for (i in 1:length(rawsce_list)) {
   is.cell <- e.out$FDR <= 0.05
   
   print(sum(is.cell, na.rm=TRUE))
-  print(table(br.out$rank == sum(is.cell, na.rm=TRUE)))
   
   p <- p + geom_hline(yintercept=min(br.out$fitted[o], na.rm=TRUE), color="red", linetype="dashed")
   p <- p + geom_hline(yintercept=metadata(br.out)$knee, color="dodgerblue", linetype="dashed")
