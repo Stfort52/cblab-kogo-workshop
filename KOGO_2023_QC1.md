@@ -21,6 +21,7 @@ Set the path to load or save data.
 
 ``` r
 rdatadir = '/home/data/'
+ranaldir = '/home/edu001/'
 ```
 
 ### **Load Data**
