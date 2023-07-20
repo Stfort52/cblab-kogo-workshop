@@ -72,8 +72,8 @@ cds <- estimateSizeFactors(cds)
 cds <- estimateDispersions(cds)
 ```
 
-Typically, to order cells by progress, we want to reduce the number of
-genes analyzed. So we can use the top 15 most overdispersed components to order our cells.
+We will then run reduceDimension with t-SNE as the reduction method,
+and clusterCells according to global expression profile.
 
 ``` r
 cds <- reduceDimension(cds, num_dim = 15, reduction_method = 'tSNE')
@@ -96,6 +96,8 @@ The trajectory analysis consists of three stages: 1. Choose genes that
 define progress 2. Reduce the dimensionality of the data 3. Order cells
 in pseudotime
 
+Typically, to order cells by progress, we want to reduce the number of
+genes analyzed. So we can use the top 1000 most overdispersed genes to order our cells.
 ``` r
 clustering_DEG_genes <- differentialGeneTest(cds, fullModelFormulaStr = '~Cluster')
 ordering_genes <- row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
