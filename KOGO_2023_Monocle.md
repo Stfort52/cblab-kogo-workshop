@@ -73,9 +73,7 @@ cds <- estimateDispersions(cds)
 ```
 
 Typically, to order cells by progress, we want to reduce the number of
-genes analyzed. So we can select for a subset of genes that we believe
-are important in setting said ordering, such as overdispersed genes. So
-we can use the top 15 most overdispersed genes to order our cells.
+genes analyzed. So we can use the top 15 most overdispersed components to order our cells.
 
 ``` r
 cds <- reduceDimension(cds, num_dim = 15, reduction_method = 'tSNE')
