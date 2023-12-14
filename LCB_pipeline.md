@@ -1,4 +1,4 @@
-KOGO_LCB_pipeline
+LCB_pipeline
 ================
 2023-07-07
 
