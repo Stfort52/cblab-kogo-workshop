@@ -1,1 +1,1 @@
-# 2023_KOGO_workshop
+# Workshop hands-on materials
