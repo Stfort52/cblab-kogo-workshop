@@ -1,4 +1,4 @@
-KOGO_QC2-Integration
+QC2-Integration
 ================
 2023-07-07
 
