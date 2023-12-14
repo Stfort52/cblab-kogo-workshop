@@ -1,4 +1,4 @@
-KOGO_Seurat_pipeline
+Seurat_pipeline
 ================
 2023-07-07
 
