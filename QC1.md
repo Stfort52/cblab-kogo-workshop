@@ -20,8 +20,8 @@ library(ggplot2)
 Set the path to load or save data.
 
 ``` r
-rdatadir = '/home/data/'
-ranaldir = '/home/edu001/'
+rdatadir = '/home/rex/'
+ranaldir = '/home/rex/QC_1/'
 ```
 
 ### **Load Data**
