@@ -154,15 +154,11 @@ filtering <- function(sce,umi,mtpct,detect){
   filter_by_mt_percent = sce$subsets_MT_percent < mtpct
   filter_by_nfeature = sce$detected > detect
   
-  sce <- runColDataPCA(sce, variables = list("sum", "detected", "subsets_MT_percent", "percent.top_500"))
-  
   sce$use <- (
     filter_by_total_counts &
       filter_by_mt_percent &
       filter_by_nfeature
   )
-  
-  plotReducedDim(sce, dimred="PCA_coldata", colour_by="use")
   
   sce = sce[,sce$use]
   return(sce)
