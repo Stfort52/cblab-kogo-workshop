@@ -24,7 +24,7 @@ Here, we describe a brief trajectory analysis of T cell subset using
 monocle. This dataset has various celltypes including T cell.
 
 ``` r
-load('./kogo2022/Monocle3/seurat.RData')
+load('/home/rex/seurat.RData')
 
 DimPlot(seurat, group.by = 'celltype',label=T)
 ```
