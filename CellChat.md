@@ -32,21 +32,18 @@ lung_seurat
     ##  3 dimensional reductions calculated: pca, tsne, umap
 
 ``` r
-p <- UMAPPlot(lung_seurat, group.by = 'celltype', label = TRUE)
-ggsave(filename = "KOGO_CellChat/umap.png", plot = p)
+UMAPPlot(lung_seurat, group.by = 'celltype', label = TRUE)
 ```
 
 ``` r
-p <- UMAPPlot(lung_seurat, group.by = 'celltype', split.by = 'group', label = TRUE)
-ggsave(filename = "KOGO_CellChat/umap-group.png", plot = p, width = 15, height = 6)
+UMAPPlot(lung_seurat, group.by = 'celltype', split.by = 'group', label = TRUE)
 ```
 
 ### **Preparing the data for CellChat**
 
 ``` r
 CellChatDB <- CellChatDB.human
-p <- showDatabaseCategory(CellChatDB) + theme_classic(base_line_size = 0)
-ggsave(filename = "KOGO_CellChat/DB-category.png", plot = p)
+showDatabaseCategory(CellChatDB) + theme_classic(base_line_size = 0)
 ```
 
 ``` r
@@ -137,10 +134,8 @@ cellchat_covid <- netAnalysis_computeCentrality(cellchat_covid, slot.name = "net
 ### **Visualization**
 
 ``` r
-pdf(file = "KOGO_CellChat/netVisual_circle.pdf")
 netVisual_circle(cellchat_covid@net$weight, vertex.weight = groupSize_covid,
                  weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
-dev.off()
 ```
 
     ## png 
