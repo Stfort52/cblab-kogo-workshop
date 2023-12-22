@@ -56,14 +56,13 @@ gene_variance <- modelGeneVar(sce.norm)
 
 df <- data.frame(mean = gene_variance$mean,
                  total = gene_variance$total)
-p <- ggplot(df) +
+ggplot(df) +
   geom_point(aes(x = mean, y = total), shape = 1, size = 2) +
   stat_function(fun = metadata(gene_variance)$trend, color = "blue") +
   labs(x = "mean_log-expression",
        y = "variance") +
   scale_x_continuous(breaks = seq(0, 8, 2)) +
   theme_classic()
-ggsave(plot = p, filename = "KOGO_LCB/geneVar.png", width = 5, height = 3)
 ```
 
 ``` r
@@ -102,8 +101,7 @@ seurat <- RunPCA(seurat, features = VariableFeatures(seurat))
 ```
 
 ``` r
-p <- ElbowPlot(seurat, ndims = 50) + theme_classic()
-ggsave(plot = p, filename = "KOGO_LCB/elbowPlot.png", width = 5, height = 4)
+ElbowPlot(seurat, ndims = 50) + theme_classic()
 ```
 
 We set to 15 PCs for clustering and visualization. After clustering and
@@ -158,50 +156,43 @@ marker.genes<- list(T.cell = c('CD3D','CD3E','TRAC'),
 ## T.cell
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$T.cell, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_T.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$T.cell, order = T, ncol = 3)
 ```
 
 ## Monocyte
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$Monocyte, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_monocyte.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$Monocyte, order = T, ncol = 3)
 ```
 
 ## NK.cell
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$NK.cell, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_NK.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$NK.cell, order = T, ncol = 3)
 ```
 
 ## B.cell
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$B.cell, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_B.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$B.cell, order = T, ncol = 3)
 ```
 
 ## Classical.Dendritic
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$Classical.Dendritic, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_classical-dendritic.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$Classical.Dendritic, order = T, ncol = 3)
 ```
 
 ## Plasmacytoid.Dendritic
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$Plasmacytoid.Dendritic, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_plasmacytoid-dendritic.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$Plasmacytoid.Dendritic, order = T, ncol = 3)
 ```
 
 ## Plasma.cell
 
 ``` r
-p <- FeaturePlot(seurat, features = marker.genes$Plasma.cell, order = T, ncol = 3)
-ggsave(filename = "KOGO_LCB/marker_plasma.png", plot = p, width = 10, height = 3)
+FeaturePlot(seurat, features = marker.genes$Plasma.cell, order = T, ncol = 3)
 ```
 
 ### **Marker gene expression on Heatmap**
@@ -226,18 +217,13 @@ my_breaks <- c(seq(min(scaledExprs), 0,
                    max(scaledExprs),
                    length.out=floor(palette_length/2)))
 
-pdf(file = "KOGO_LCB/heatmap.pdf")
 pheatmap(scaledExprs,
          cluster_cols = T, cluster_rows = F, clustering_method = "ward.D2",
          treeheight_col = 0,
          breaks = my_breaks, color=my_color,
          labels_row = as.expression(lapply(rownames(scaledExprs), function(a) bquote(italic(.(a))))),
          angle_col = "315")
-dev.off()
 ```
-
-    ## pdf 
-    ##   3
 
 ### **Cell type annotation**
 
@@ -254,8 +240,7 @@ seurat$celltype[seurat$celltype %in% c('8')] <- 'Plasma.cell'
 ```
 
 ``` r
-p <- DimPlot(seurat, group.by = 'celltype', label=TRUE)
-ggsave(plot = p, filename = "KOGO_LCB/annotatedUmap.png")
+DimPlot(seurat, group.by = 'celltype', label=TRUE)
 ```
 
 ### **Reference**
