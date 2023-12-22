@@ -21,7 +21,7 @@ library(ComplexHeatmap)
 ### **Load the Data**
 
 ``` r
-lung_seurat <- readRDS("/home/data/lung_seurat.rds")
+lung_seurat <- readRDS("/home/rex/lung_seurat.rds")
 lung_seurat
 ```
 
