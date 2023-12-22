@@ -86,23 +86,20 @@ umi=500
 mtpct=15
 detect=100
 
-p <- ggplot(data.frame(colData(sce)), aes(x = log10_sum)) + 
+ggplot(data.frame(colData(sce)), aes(x = log10_sum)) + 
   geom_histogram() +
   theme_bw() +
   geom_vline(xintercept = log10(umi), color="red", linetype="dashed")
-ggsave(filename = paste0(ranaldir, 'log10_sum.png'), plot = p)
 
-p <- ggplot(data.frame(colData(sce)), aes(x = subsets_MT_percent)) + 
+ggplot(data.frame(colData(sce)), aes(x = subsets_MT_percent)) + 
   geom_histogram() +
   theme_bw() +
   geom_vline(xintercept = mtpct, color="red", linetype="dashed")
-ggsave(filename = paste0(ranaldir, 'subsets_MT_percent.png'), plot = p)
 
-p <- ggplot(data.frame(colData(sce)), aes(x = detected)) + 
+ggplot(data.frame(colData(sce)), aes(x = detected)) + 
   geom_histogram() +
   theme_bw() +
   geom_vline(xintercept = mtpct, color="red", linetype="dashed")
-ggsave(filename = paste0(ranaldir, 'detected.png'), plot = p)
 ```
 
 Low-quality cells are filtered out and can be identified by the PCA
@@ -113,16 +110,11 @@ filter_by_total_counts = sce$sum > umi
 filter_by_mt_percent = sce$subsets_MT_percent < mtpct
 filter_by_nfeature = sce$detected > detect
 
-sce <- runColDataPCA(sce, variables = list("sum", "detected", "subsets_MT_percent", "percent.top_500"))
-
 sce$use <- (
   filter_by_total_counts &
     filter_by_mt_percent &
     filter_by_nfeature
 )
-
-p <- plotReducedDim(sce, dimred="PCA_coldata", colour_by="use")
-ggsave(filename = paste0(ranaldir, 'PCA_coldata.png'), plot = p)
 ```
 
 ``` r
