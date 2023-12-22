@@ -24,10 +24,9 @@ Here, we describe a brief trajectory analysis of T cell subset using
 monocle. This dataset has various celltypes including T cell.
 
 ``` r
-load(paste0(rdatadir, 'seurat.RData'))
+load('./kogo2022/Monocle3/seurat.RData')
 
-p <- DimPlot(seurat, group.by = 'celltype',label=T)
-ggsave(filename = paste0(ranaldir, 'dimplot.png'), plot = p)
+DimPlot(seurat, group.by = 'celltype',label=T)
 ```
 
 Since we will draw trajectory graph of T cell, extract the T cell
@@ -83,8 +82,7 @@ cds <- monocle::clusterCells(cds)
     ## Distance cutoff calculated to 3.222216
 
 ``` r
-p <- monocle::plot_cell_clusters(cds, color = "Cluster")
-ggsave(filename = paste0(ranaldir, 'monocle_cluster.png'), plot = p)
+monocle::plot_cell_clusters(cds, color = "Cluster")
 ```
 
 ### **Constructing Single Cell Trajectories**
@@ -106,10 +104,8 @@ cds <- setOrderingFilter(cds, ordering_genes = ordering_genes)
 cds <- reduceDimension(cds, num_dim = 15, method = 'DDRTree')
 
 cds <- orderCells(cds)
-p <- plot_cell_trajectory(cds, color_by = "Cluster")
-ggsave(filename = paste0(ranaldir, 'monocle_Cluster.png'), plot = p)
-p <- plot_cell_trajectory(cds, color_by = "Pseudotime")
-ggsave(filename = paste0(ranaldir, 'monocle_Pseudotime.png'), plot = p)
+plot_cell_trajectory(cds, color_by = "Cluster")
+plot_cell_trajectory(cds, color_by = "Pseudotime")
 ```
 
 ### **Finding Genes that Change as a Function of Pseudotime**
@@ -168,14 +164,11 @@ We can see that the expression patterns of the genes change
 significantly with pseudotime.
 
 ``` r
-p <- plot_genes_in_pseudotime(cds[c('MKI67', 'TOP2A', 'STMN1'),])
-ggsave(filename = paste0(ranaldir, 'monocle_proliferating.png'), plot = p)
+plot_genes_in_pseudotime(cds[c('MKI67', 'TOP2A', 'STMN1'),])
 
-p <- plot_genes_in_pseudotime(cds[c('CCR7', 'IL7R'),])
-ggsave(filename = paste0(ranaldir, 'monocle_naive.png'), plot = p)
+plot_genes_in_pseudotime(cds[c('CCR7', 'IL7R'),])
 
-p <- plot_genes_in_pseudotime(cds[c('PDCD1', 'CTLA4', 'LAG3', 'TIGIT'),])
-ggsave(filename = paste0(ranaldir, 'monocle_exhausted.png'), plot = p)
+plot_genes_in_pseudotime(cds[c('PDCD1', 'CTLA4', 'LAG3', 'TIGIT'),])
 ```
 
 ### **Reference**
