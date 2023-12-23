@@ -79,7 +79,7 @@ cds <- reduceDimension(cds, num_dim = 15, reduction_method = 'tSNE')
 cds <- monocle::clusterCells(cds)
 ```
 
-    ## Distance cutoff calculated to 3.222216
+    ## Distance cutoff calculated to 2.984899
 
 ``` r
 monocle::plot_cell_clusters(cds, color = "Cluster")
