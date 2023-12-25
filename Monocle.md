@@ -4,11 +4,6 @@ Monocle
 
 ### **Library**
 
-We obtained SingleCellExperiment(SCE) objects without estimated droplets
-from previous section. In this section, we will remove low quality cells
-with large mitochondrial proportions, low RNA contents or low detected
-gene numbers.
-
 ``` r
 library(Seurat)
 library(magrittr)
