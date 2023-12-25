@@ -21,7 +21,7 @@ Set the path to load or save data.
 
 ``` r
 rdatadir = '/home/rex/'
-ranaldir = '/home/rex/QC_1/'
+ranaldir = '/home/rex/QC_1/'  # /home/username/QC_1/
 ```
 
 ### **Load Data**
