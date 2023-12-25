@@ -133,8 +133,8 @@ seurat <- RunTSNE(seurat, dims = 1:PCs)
 ```
 
 ``` r
-p <- DimPlot(seurat, label=TRUE)
-ggsave(plot = p, filename = "KOGO_LCB/umap.png")
+DimPlot(seurat, label=TRUE)
+
 ```
 
 ### **Canonical cell type marker gene expression**
