@@ -58,7 +58,7 @@ cds <- as.CellDataSet(T_cell)
 
 ### **Monocle process**
 
-Next, we’ll perform some normalization and variance estimation steps,
+Next, we’ll perform variance estimation steps,
 which will be used in the differential expression analyses later on.
 
 ``` r
