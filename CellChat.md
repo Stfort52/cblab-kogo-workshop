@@ -1,6 +1,6 @@
 CellChat
 ================
-2023-07-07
+2024-07-08
 
 ### **Library CellChat**
 
@@ -21,7 +21,7 @@ library(ComplexHeatmap)
 ### **Load the Data**
 
 ``` r
-lung_seurat <- readRDS("/home/rex/lung_seurat.rds")
+lung_seurat <- readRDS("/BiO/home/data/CellChat/lung_seurat.rds")
 lung_seurat
 ```
 
