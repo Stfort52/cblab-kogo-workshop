@@ -252,6 +252,8 @@ DimPlot(seurat, group.by = 'celltype', label=TRUE)
 
 ```r
 rm(seurat, sce)
+rm(list = grep('Droplet',ls(),value = TRUE))
+rm(list = grep('rawsce',ls(),value = TRUE))
 ```
 
 
