@@ -51,6 +51,8 @@ showDatabaseCategory(CellChatDB) + theme_classic(base_line_size = 0)
 ``` r
 expr <- lung_seurat@assays$RNA@data
 meta <- lung_seurat@meta.data
+
+rm(lung_seurat) # remove big dataset after subsetting expr, meta data from this data
 ```
 
 ### **Run CellChat**
