@@ -127,6 +127,12 @@ plot_cells(cds, genes=c('GNLY'), show_trajectory_graph = F, cell_size = 1)
 plot_cells(cds, genes=c('NKG7'), show_trajectory_graph = F, cell_size = 1)
 ```
 
+### *** Remove datasets after practice ***
+```r
+rm(seurat, cds)
+```
+
+
 ### **Reference**
 
 Butler, A., Hoffman, P., Smibert, P., Papalexi, E. & Satija, R. Integrating single-cell transcriptomic data across different conditions, technologies, and species. Nat. Biotechnol. 36, 411–420 (2018).
