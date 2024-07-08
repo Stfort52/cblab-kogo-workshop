@@ -20,8 +20,13 @@ library(ggplot2)
 Set the path to load or save data.
 
 ``` r
-rdatadir = '/home/rex/'
-ranaldir = '/home/rex/QC_1/'  # /home/username/QC_1/
+rdatadir = '/BiO/home/data/QC/'
+ranaldir = '/BiO/home/edu03/QC_1/'  # /home/username/QC_1/
+```
+
+make analysis directory if it does not exist
+```r
+if (!dir.exists(ranaldir)) { dir.create(ranaldir, recursive = TRUE)}
 ```
 
 ### **Load Data**
