@@ -36,7 +36,7 @@ sce
 ```
 
     ## class: SingleCellExperiment 
-    ## dim: 36604 12252 
+    ## dim: 36604 12250
     ## metadata(1): Samples
     ## assays(1): counts
     ## rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
@@ -119,9 +119,6 @@ sce$use <- (
 
 ``` r
 sce = sce[,sce$use]
-```
-
-```r
 sce
 ```
 
