@@ -20,6 +20,7 @@ load('/BiO/home/data/Monocle3/seurat.RData')
 
 DimPlot(seurat, group.by = 'celltype', label=T)
 ```
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/762ad79b-21a5-4fd0-8934-7e71a557be93)
 
 Since we will draw trajectory graph of T cell, extract the T cell population from whole dataset and re-normalize.
 
@@ -63,6 +64,9 @@ cds <- preprocess_cds(cds, "PCA", num_dim = 30, norm_method = "none", use_genes 
 monocle3::plot_pc_variance_explained(cds)
 ```
 
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/481432e3-cfbb-4eb1-8876-c37b97da2c15)
+
+
 ### **Correcting Batch effects**
 
 Since the dataset has various sample and batch effects, we perform Mutual Nearest Neighbor (MNN) batch effect correction implemented batchelor, which is included in monocle3 package. The sample ID information is in ‘ID’ metadata.
@@ -83,6 +87,8 @@ cds = learn_graph(cds,learn_graph_control = list(prune_graph = TRUE))
 plot_cells(cds, color_cells_by = "cluster", label_cell_groups = F, label_principal_points=T)
 ```
 
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/6c0d5019-5521-4618-a519-9914fd704db0)
+
 CCR7 and LEF1 are known as naive T cell marker, so we set the cluster where expression of these genes is high as the root state.
 
 ``` r
@@ -91,6 +97,9 @@ plot_cells(cds, genes=c('LEF1'), show_trajectory_graph = F, cell_size = 1)
 
 cds <- order_cells(cds, root_pr_nodes = 'Y_2')
 ```
+
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/911d242f-4836-4a90-b002-956f37211822)
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/4a4ae547-90bd-4e74-8d59-4c66793d6b96)
 
 Plotting the cells and coloring them by pseudotime shows how they were ordered.
 
@@ -101,6 +110,8 @@ plot_cells(cds,
            label_leaves=FALSE,
            label_branch_points=FALSE)
 ```
+
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/ff8d4814-86eb-484c-8598-83cd5672b246)
 
 Check the expression of genes related to t cell function.
 
