@@ -13,6 +13,11 @@ library(scater)
 library(ggplot2)
 ```
 
+```r
+### load SingleCellExperiment object after QC
+load('/BiO/home/data/QC/sce.RData')
+```
+
 ``` r
 sce
 ```
@@ -102,6 +107,7 @@ seurat <- RunPCA(seurat, features = VariableFeatures(seurat))
 
 ``` r
 ElbowPlot(seurat, ndims = 50) + theme_classic()
+# The theme_classic() function modifies the theme of ggplot to 'classic'
 ```
 
 We set to 15 PCs for clustering and visualization. After clustering and
@@ -134,7 +140,7 @@ seurat <- RunTSNE(seurat, dims = 1:PCs)
 
 ``` r
 DimPlot(seurat, label=TRUE)
-
+# default space is UMAP
 ```
 
 ### **Canonical cell type marker gene expression**
@@ -156,43 +162,43 @@ marker.genes<- list(T.cell = c('CD3D','CD3E','TRAC'),
 ## T.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$T.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$T.cell, order = T )
 ```
 
 ## Monocyte
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Monocyte, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Monocyte, order = T )
 ```
 
 ## NK.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$NK.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$NK.cell, order = T )
 ```
 
 ## B.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$B.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$B.cell, order = T )
 ```
 
 ## Classical.Dendritic
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Classical.Dendritic, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Classical.Dendritic, order = T )
 ```
 
 ## Plasmacytoid.Dendritic
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Plasmacytoid.Dendritic, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Plasmacytoid.Dendritic, order = T )
 ```
 
 ## Plasma.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Plasma.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Plasma.cell, order = T )
 ```
 
 ### **Marker gene expression on Heatmap**
