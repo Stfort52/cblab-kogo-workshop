@@ -13,6 +13,11 @@ library(SingleCellExperiment)
 library(ggplot2)
 ```
 
+```r
+### load SingleCellExperiment object after QC
+load('/BiO/home/data/QC/sce.RData')
+```
+
 ``` r
 sce
 ```
@@ -38,8 +43,9 @@ seurat
 ```
 
     ## An object of class Seurat 
-    ## 36604 features across 24389 samples within 1 assay 
+    ## 36604 features across 14066 samples within 1 assay 
     ## Active assay: RNA (36604 features, 0 variable features)
+    ##  2 layers present: counts, data
 
 ### **Normalization**
 
@@ -71,7 +77,9 @@ seurat <- RunPCA(seurat, features = VariableFeatures(seurat))
 
 ``` r
 ElbowPlot(seurat, ndims = 50)
+# check your elbowplot on jupyter notebook
 ```
+
 
 We set to 10 PCs for clustering and visualization. After clustering and
 visualization, cells are plotted in the two-dimensional TSNE or UMAP
@@ -89,11 +97,11 @@ seurat <- FindClusters(seurat,
     ## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
     ## 
     ## Number of nodes: 14066
-    ## Number of edges: 777229
+    ## Number of edges: 456256
     ## 
     ## Running Louvain algorithm...
-    ## Maximum modularity in 10 random starts: 0.9098
-    ## Number of communities: 17
+    ## Maximum modularity in 10 random starts: 0.9043
+    ## Number of communities: 14
     ## Elapsed time: 1 seconds
 
 ``` r
@@ -103,6 +111,7 @@ seurat <- RunTSNE(seurat, dims = 1:PCs)
 
 ``` r
 DimPlot(seurat, label = TRUE)
+# default space is UMAP
 ```
 
 ### **Canonical cell type marker gene expression**
