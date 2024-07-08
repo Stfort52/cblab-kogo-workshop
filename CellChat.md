@@ -138,9 +138,6 @@ netVisual_circle(cellchat_covid@net$weight, vertex.weight = groupSize_covid,
                  weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
 ```
 
-    ## png 
-    ##   2
-
 ### **Reference**
 
 Jin, S., Guerrero-Juarez, C. F., Zhang, L., Chang, I., Ramos, R., Kuan,
