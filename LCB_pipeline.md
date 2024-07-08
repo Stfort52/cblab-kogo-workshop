@@ -248,6 +248,12 @@ seurat$celltype[seurat$celltype %in% c('8')] <- 'Plasma.cell'
 ``` r
 DimPlot(seurat, group.by = 'celltype', label=TRUE)
 ```
+### **remove dataset after practice**
+
+```r
+rm(seurat, sce)
+```
+
 
 ### **Reference**
 
