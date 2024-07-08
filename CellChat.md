@@ -64,15 +64,14 @@ table(lung_seurat$disease)
     ## 21939 44513
 
 ``` r
-covid <- rownames(meta)[meta$group == 'S/C']
+# remove neutrophil and ambient cluster for analysis and select patient group (Severe covid: S/C)
+covid <- rownames(meta)[meta$group == 'S/C' & meta$celltype %in% c('M1','M2','mDC','T','NK','B','Epithelial','pDC','Plasma','Mast')]
 covid_input = expr[, covid]
 covid_meta = meta[covid, ]
+covid_meta$celltype = as.character(covid_meta$celltype)
 unique(covid_meta$celltype)
 ```
-
-    ##  [1] M1         Neutrophil Ambient    T          Epithelial NK        
-    ##  [7] Plasma     M2         mDC        B          pDC        Mast      
-    ## Levels: B Plasma T NK pDC mDC Mast Neutrophil M1 M2 Epithelial Ambient
+    ## 'M1' 'T' Epithelial' 'NK' 'Plasma' 'M2' 'mDC' 'B' 'pDC' 'Mast'
 
 ``` r
 cellchat_covid <- createCellChat(object = covid_input, meta = covid_meta, group.by = 'celltype')
@@ -80,7 +79,7 @@ cellchat_covid <- createCellChat(object = covid_input, meta = covid_meta, group.
 
     ## [1] "Create a CellChat object from a data matrix"
     ## Set cell identities for the new CellChat object 
-    ## The cell groups used for CellChat analysis are  B Plasma T NK pDC mDC Mast Neutrophil M1 M2 Epithelial Ambient
+    ## The cell groups used for CellChat analysis are  B Epithelial M1 M2 Mast mDC NK pDC Plasma T 
 
 ``` r
 cellchat_covid <- addMeta(cellchat_covid, meta = covid_meta)
@@ -137,6 +136,62 @@ cellchat_covid <- netAnalysis_computeCentrality(cellchat_covid, slot.name = "net
 netVisual_circle(cellchat_covid@net$weight, vertex.weight = groupSize_covid,
                  weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
 ```
+### Process same process for healthy control(HC) group
+
+```r
+healthy <- rownames(meta)[meta$group == 'HC' & meta$celltype %in% c('M1','M2','mDC','T','NK','B','Epithelial','pDC','Plasma','Mast')]
+healthy_input = expr[, healthy]
+healthy_meta = meta[healthy, ]
+healthy_meta$celltype = as.character(healthy_meta$celltype)
+```
+
+```r
+cellchat_HC <- createCellChat(object = healthy_input, meta = healthy_meta, group.by = 'celltype')
+```
+
+    ## [1] "Create a CellChat object from a data matrix"
+    ## Set cell identities for the new CellChat object 
+    ## The cell groups used for CellChat analysis are  B Epithelial M1 M2 Mast mDC NK pDC Plasma T 
+
+```r
+cellchat_HC <- addMeta(cellchat_HC, meta = healthy_meta)
+cellchat_HC <- setIdent(cellchat_HC, ident.use = 'celltype')
+groupSize_HC <- as.numeric(table(cellchat_HC@idents))
+cellchat_HC@DB <- CellChatDB
+```
+
+```r
+# Preprocessing the expression data for cell-cell communication analysis
+cellchat_HC <- subsetData(cellchat_HC)
+cellchat_HC <- identifyOverExpressedGenes(cellchat_HC)
+cellchat_HC <- identifyOverExpressedInteractions(cellchat_HC)
+cellchat_HC <- projectData(cellchat_HC, PPI.human)
+
+# Compute the communication probability and infer cellular communication network
+cellchat_HC <- computeCommunProb(cellchat_HC)
+cellchat_HC <- filterCommunication(cellchat_HC, min.cells = 0)
+
+# Extract the inferred cellular communication network as a data frame
+df.net_HC <- subsetCommunication(cellchat_HC)
+
+# Infer the cell-cell communication at a signaling pathway level
+cellchat_HC <- computeCommunProbPathway(cellchat_HC)
+
+# Calculate the aggregated cell-cell communication network
+cellchat_HC <- aggregateNet(cellchat_HC)
+
+# Compute centrality
+cellchat_HC <- netAnalysis_computeCentrality(cellchat_HC, slot.name = "netP")
+
+```
+### **Visualization**
+```
+netVisual_circle(cellchat_HC@net$weight, vertex.weight = groupSize_HC, weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
+```
+
+
+
+
 
 ### **Reference**
 
