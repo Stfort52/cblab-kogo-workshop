@@ -24,9 +24,9 @@ rdatadir = '/BiO/home/data/QC/'
 ranaldir = '/BiO/home/edu03/QC_1/'  # /home/username/QC_1/
 ```
 
-make analysis directory if it does not exist
+Make analysis directory if it does not exist
 ```r
-if (!dir.exists(ranaldir)) { dir.create(ranaldir, recursive = TRUE)}
+if (!dir.exists(ranaldir)) { dir.create(ranaldir, recursive = TRUE) }
 ```
 
 ### **Load Data**
@@ -89,9 +89,9 @@ for (i in 1:length(rawsce_list)) {
   
   set.seed(2023)
   e.out <- emptyDrops(counts(rawsce))  ## Cells that have UMI counts lower than 100 are empty cells.
-  table(Sig=e.out$FDR <= 0.05, Limited=e.out$Limited)
+  print(table(Sig=e.out$FDR <= 0.05, Limited=e.out$Limited))
+
   is.cell <- e.out$FDR <= 0.05
-  
   print(sum(is.cell, na.rm=TRUE))
   
   p <- p + geom_hline(yintercept=min(br.out$fitted[o], na.rm=TRUE), color="red", linetype="dashed")
@@ -107,55 +107,65 @@ for (i in 1:length(rawsce_list)) {
 }
 ```
 
-    ## [1] 12252
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 65265     0
+    ##   TRUE   5709  6541
+    ## [1] 12250
 
-    ## [1] 7280
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 75151     0
+    ##   TRUE   1406  5899
+    ## [1] 7305
 
-    ## [1] 6502
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 68613     0
+    ##   TRUE   660   5843
+    ## [1] 6503
 
-    ## [1] 4487
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 30934     0
+    ##   TRUE    561  3931
+    ## [1] 4492
 
-    ## [1] 4095
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 10689     0
+    ##   TRUE    428  3671
+    ## [1] 4099
 
-    ## [1] 2659
-    ## 
-    ##   FALSE    TRUE 
-    ## 6794877       3
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 25095     0
+    ##   TRUE    427  2209
+    ## [1] 2636
 
-    ## [1] 2001
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 14106     0
+    ##   TRUE    196  1806
+    ## [1] 2002
 
-    ## [1] 5123
-    ## 
-    ##   FALSE    TRUE 
-    ## 6794879       1
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 68921     0
+    ##   TRUE    869  4266
+    ## [1] 5135
 
-    ## [1] 2838
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 67020     0
+    ##   TRUE    549  2325
+    ## [1] 2874
 
-    ## [1] 7178
-    ## 
-    ##   FALSE 
-    ## 6794880
+    ##        Limited
+    ## Sig     FALSE  TRUE
+    ##   FALSE 60514     0
+    ##   TRUE    689  6462
+    ## [1] 7151
 
 ### **Check DropletUtils data**
 
