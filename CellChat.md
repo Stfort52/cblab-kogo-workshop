@@ -34,10 +34,12 @@ lung_seurat
 ``` r
 UMAPPlot(lung_seurat, group.by = 'celltype', label = TRUE)
 ```
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/64667fa6-b693-4d0e-a13e-54efafd5c80c)
 
 ``` r
 UMAPPlot(lung_seurat, group.by = 'celltype', split.by = 'group', label = TRUE)
 ```
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/6f4d2ca0-ea6c-4bab-b405-8cbe3c0c785d)
 
 ### **Preparing the data for CellChat**
 
@@ -136,6 +138,10 @@ cellchat_covid <- netAnalysis_computeCentrality(cellchat_covid, slot.name = "net
 netVisual_circle(cellchat_covid@net$weight, vertex.weight = groupSize_covid,
                  weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
 ```
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/e9526333-a65f-42e7-a30e-82d577433ed3)
+
+
+
 ### Process same process for healthy control(HC) group
 
 ```r
@@ -188,6 +194,7 @@ cellchat_HC <- netAnalysis_computeCentrality(cellchat_HC, slot.name = "netP")
 ```
 netVisual_circle(cellchat_HC@net$weight, vertex.weight = groupSize_HC, weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
 ```
+![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/77257d17-3f71-46d4-b54b-aae3897542c0)
 
 
 
