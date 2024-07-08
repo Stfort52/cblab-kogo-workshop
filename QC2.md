@@ -1,6 +1,6 @@
 QC2-Integration
 ================
-2023-07-07
+2024-07-08
 
 ### **Library**
 
@@ -99,7 +99,7 @@ ggplot(data.frame(colData(sce)), aes(x = subsets_MT_percent)) +
 ggplot(data.frame(colData(sce)), aes(x = detected)) + 
   geom_histogram() +
   theme_bw() +
-  geom_vline(xintercept = mtpct, color="red", linetype="dashed")
+  geom_vline(xintercept = detect, color="red", linetype="dashed")
 ```
 
 Low-quality cells are filtered out and can be identified by the PCA
@@ -119,6 +119,10 @@ sce$use <- (
 
 ``` r
 sce = sce[,sce$use]
+```
+
+```r
+sce
 ```
 
 ### **Process other samples**
