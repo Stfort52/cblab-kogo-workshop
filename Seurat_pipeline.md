@@ -133,43 +133,43 @@ marker.genes<- list(T.cell = c('CD3D','CD3E','TRAC'),
 ## T.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$T.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$T.cell, order = T )
 ```
 
 ## Monocyte
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Monocyte, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Monocyte, order = T )
 ```
 
 ## NK.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$NK.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$NK.cell, order = T )
 ```
 
 ## B.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$B.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$B.cell, order = T )
 ```
 
 ## Classical.Dendritic
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Classical.Dendritic, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Classical.Dendritic, order = T )
 ```
 
 ## Plasmacytoid.Dendritic
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Plasmacytoid.Dendritic, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Plasmacytoid.Dendritic, order = T )
 ```
 
 ## Plasma.cell
 
 ``` r
-FeaturePlot(seurat, features = marker.genes$Plasma.cell, order = T, ncol = 3)
+FeaturePlot(seurat, features = marker.genes$Plasma.cell, order = T )
 ```
 
 ### **Marker gene expression on Heatmap**
