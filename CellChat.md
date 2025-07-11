@@ -1,150 +1,161 @@
-CellChat
+Cell-Cell Interaction Analysis with CellChat
 ================
-2024-07-08
+2025-07-22
 
-### **Library CellChat**
+---
+### **Load library**
 
 ``` r
-library(devtools)
 library(Seurat)
-library(scater)
-library(harmony)
-library(DropletUtils)
-library(scran)
 library(CellChat)
-library(ggplot2)
-library(patchwork)
-library(igraph)
-library(ComplexHeatmap)
 ```
 
 ### **Load the Data**
 
 ``` r
-lung_seurat <- readRDS("/BiO/home/data/CellChat/lung_seurat.rds")
-lung_seurat
+seurat <- readRDS("/BiO/data/HLCA_pulmonary_fibrosis_immune_sampled.rds")
+seurat
 ```
 
     ## An object of class Seurat 
-    ## 25916 features across 66452 samples within 2 assays 
-    ## Active assay: RNA (23916 features, 2000 variable features)
-    ##  1 other assay present: integrated
-    ##  3 dimensional reductions calculated: pca, tsne, umap
+    ## 19354 features across 7408 samples within 1 assay 
+    ## Active assay: RNA (19354 features, 0 variable features)
+    ##  3 layers present: counts, data, scale.data
+    ##  4 dimensional reductions calculated: pca, umap, harmony, umap.harmony
+
+### **UMAP visualization**
 
 ``` r
-UMAPPlot(lung_seurat, group.by = 'celltype', label = TRUE)
+DimPlot(seurat, group.by = 'celltype', reduction = "umap.harmony")
 ```
-![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/64667fa6-b693-4d0e-a13e-54efafd5c80c)
+<img width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/bbbf95c3-7d8e-449b-90b7-7825a3994a35" />
 
 ``` r
-UMAPPlot(lung_seurat, group.by = 'celltype', split.by = 'group', label = TRUE)
+DimPlot(seurat, group.by = 'celltype', reduction = "umap.harmony", split.by = "disease")
 ```
-![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/6f4d2ca0-ea6c-4bab-b405-8cbe3c0c785d)
+<img width="600" height="320" alt="image" src="https://github.com/user-attachments/assets/86a5a685-67ab-46ca-868d-c8820abf3c48" />
 
-### **Preparing the data for CellChat**
-
+---
+### **Input data processing**
+**1-1. Create CellChat object from Seurat object**
 ``` r
-CellChatDB <- CellChatDB.human
-showDatabaseCategory(CellChatDB) + theme_classic(base_line_size = 0)
+seurat_PF <- subset(seurat, subset = disease == "pulmonary fibrosis")
+cellchat_PF <- createCellChat(object = seurat_PF, group.by = "celltype", assay = "RNA")
 ```
 
+**1-2. Create CellChat object from expression matrix and metadata**
 ``` r
-expr <- lung_seurat@assays$RNA@data
-meta <- lung_seurat@meta.data
+expr <- seurat[["RNA"]]$data
+meta <- seurat@meta.data
 
-rm(lung_seurat) # remove big dataset after subsetting expr, meta data from this data
+cells_PF <- rownames(meta)[meta$disease == "pulmonary fibrosis"]
+
+expr_PF <- expr[, cells_PF]
+meta_PF <- meta[cells_PF,]
+meta_PF$celltype <- as.character(meta_PF$celltype)
+
+cellchat_PF <- createCellChat(object = expr_PF, meta = meta_PF, group.by = "celltype")
 ```
 
-### **Run CellChat**
-
-1.  Create CellChat object
-
+**2. Set the ligand-receptor interaction database**
 ``` r
-table(lung_seurat$disease)
+CellChatDB <- CellChatDB.human # # use CellChatDB.mouse if running on mouse data
+showDatabaseCategory(CellChatDB)
 ```
+<img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/792c759b-f82d-41d0-9edc-b7000450b409" />
 
-    ## 
-    ##     N     Y 
-    ## 21939 44513
-
+**3. Subset the expression data using CellChatDB genes**
 ``` r
-# remove neutrophil and ambient cluster for analysis and select patient group (Severe covid: S/C)
-covid <- rownames(meta)[meta$group == 'S/C' & meta$celltype %in% c('M1','M2','mDC','T','NK','B','Epithelial','pDC','Plasma','Mast')]
-covid_input = expr[, covid]
-covid_meta = meta[covid, ]
-covid_meta$celltype = as.character(covid_meta$celltype)
-unique(covid_meta$celltype)
+cellchat_PF@DB <- CellChatDB
+cellchat_PF <- subsetData(cellchat_PF)
 ```
-    ## 'M1' 'T' Epithelial' 'NK' 'Plasma' 'M2' 'mDC' 'B' 'pDC' 'Mast'
 
+**4. Identify over-expressed ligands/receptors and L-R interactions in each cell group**
 ``` r
-cellchat_covid <- createCellChat(object = covid_input, meta = covid_meta, group.by = 'celltype')
+cellchat_PF <- identifyOverExpressedGenes(cellchat_PF)
+cellchat_PF <- identifyOverExpressedInteractions(cellchat_PF)
 ```
 
-    ## [1] "Create a CellChat object from a data matrix"
-    ## Set cell identities for the new CellChat object 
-    ## The cell groups used for CellChat analysis are  B Epithelial M1 M2 Mast mDC NK pDC Plasma T 
+    ## The number of highly variable ligand-receptor pairs used for signaling inference is 872
 
+**5. (Optional) Smooth the gene expression because of shallow sequencing depth**
 ``` r
-cellchat_covid <- addMeta(cellchat_covid, meta = covid_meta)
-cellchat_covid <- setIdent(cellchat_covid, ident.use = 'celltype')
-
-levels(cellchat_covid@meta$celltype)
+cellchat_PF <- smoothData(cellchat_PF, adj = PPI.human)
 ```
 
-    ##  [1] "B"          "Plasma"     "T"          "NK"         "pDC"       
-    ##  [6] "mDC"        "Mast"       "Neutrophil" "M1"         "M2"        
-    ## [11] "Epithelial" "Ambient"
+---
+### **Inference of cell-cell communication networks**
 
+**1. Compute the communication probability**
 ``` r
-groupSize_covid <- as.numeric(table(cellchat_covid@idents))
-cellchat_covid@DB <- CellChatDB
+cellchat_PF <- computeCommunProb(cellchat_PF, raw.use = FALSE) # Set raw.use = FALSE to use the smoothed data
 ```
-
-2.  Run CellChat
-
-``` r
-# Preprocessing the expression data for cell-cell communication analysis
-cellchat_covid <- subsetData(cellchat_covid)
-cellchat_covid <- identifyOverExpressedGenes(cellchat_covid)
-cellchat_covid <- identifyOverExpressedInteractions(cellchat_covid)
-cellchat_covid <- projectData(cellchat_covid, PPI.human)
-
-# Compute the communication probability and infer cellular communication network
-cellchat_covid <- computeCommunProb(cellchat_covid)
-```
-
+    
     ## triMean is used for calculating the average gene expression per cell group. 
-    ## [1] ">>> Run CellChat on sc/snRNA-seq data <<< [2023-07-04 14:54:58]"
-    ## [1] ">>> CellChat inference is done. Parameter values are stored in `object@options$parameter` <<< [2023-07-04 14:58:18]"
+    ## [1] ">>> Run CellChat on sc/snRNA-seq data <<< [2025-07-09 16:42:49.714313]"
+    ## [1] ">>> CellChat inference is done. Parameter values are stored in `object@options$parameter` <<< [2025-07-09 16:44:45.242436]"
 
+**2. Filter the cell-cell interaction, based on the number of cells in each group**
 ``` r
-cellchat_covid <- filterCommunication(cellchat_covid, min.cells = 0)
-
-# Extract the inferred cellular communication network as a data frame
-df.net_covid <- subsetCommunication(cellchat_covid)
-
-# Infer the cell-cell communication at a signaling pathway level
-cellchat_covid <- computeCommunProbPathway(cellchat_covid)
-
-# Calculate the aggregated cell-cell communication network
-cellchat_covid <- aggregateNet(cellchat_covid)
-
-# Compute centrality
-cellchat_covid <- netAnalysis_computeCentrality(cellchat_covid, slot.name = "netP")
+cellchat_PF <- filterCommunication(cellchat_PF, min.cells = 0)
 ```
 
+**3. Extract the inferred cellular communication network as a data frame**
+``` r
+df_net_PF <- subsetCommunication(cellchat_PF)
+```
+<img width="1770" height="299" alt="image" src="https://github.com/user-attachments/assets/55c45fb2-c047-44b2-bf08-67e27712b427" />
+
+**4. Infer the cell-cell communication at a signaling pathway level**
+``` r
+cellchat_PF <- computeCommunProbPathway(cellchat_PF)
+```
+
+**5. Calculate the aggregated cell-cell communication network**
+``` r
+cellchat_PF <- aggregateNet(cellchat_PF)
+```
+
+**6. Save the CellChat object**
+``` r
+saveRDS(cellchat_PF, file = "/BiO/home/edu03/cellchat_lung_PF.rds")
+```
+
+---
 ### **Visualization**
+**Circle plot**
+``` r
+groupSize_PF <- as.numeric(table(cellchat_PF@idents))
+netVisual_circle(cellchat_PF@net$weight, vertex.weight = groupSize_PF, weight.scale = T, label.edge= F)
+```
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/e5f9a27e-832a-4010-aea8-f77723f74cf4" />
+
+---
+### **Identify signaling roles and major contributing signaling**
+**1. Compute the network centrality scores**
+``` r
+cellchat_PF <- netAnalysis_computeCentrality(cellchat_PF, slot.name = "netP")
+```
+
+**2. Visualization**
+``` r
+pathways.show <- "TGFb"
+netAnalysis_signalingRole_network(cellchat_PF, signaling = pathways.show, width = 6, height = 2, font.size = 10)
+```
+<img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/87c8bee5-e98f-43a1-b930-c22317d7a2ff" />
 
 ``` r
-netVisual_circle(cellchat_covid@net$weight, vertex.weight = groupSize_covid,
-                 weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
+netVisual_bubble(cellchat_PF, sources.use = c(3:4), targets.use = c(1:2), signaling = c("TGFb"), remove.isolate = TRUE)
 ```
-![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/e9526333-a65f-42e7-a30e-82d577433ed3)
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/7d567df2-e49d-4de0-a5f1-5cef6d6dc719" />
 
+``` r
+netVisual_chord_gene(cellchat_PF, sources.use = c(3:4), targets.use = c(1:2), signaling = c("TGFb"))
+```
+<img width="300" height="320" alt="image" src="https://github.com/user-attachments/assets/9c8a0258-e66e-4249-9512-c3e47a9bb3e3" />
 
-
-### Process same process for healthy control(HC) group
+---
+### Process same process for normal group (to be updated)
 
 ```r
 healthy <- rownames(meta)[meta$group == 'HC' & meta$celltype %in% c('M1','M2','mDC','T','NK','B','Epithelial','pDC','Plasma','Mast')]
@@ -198,17 +209,11 @@ netVisual_circle(cellchat_HC@net$weight, vertex.weight = groupSize_HC, weight.sc
 ```
 ![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/77257d17-3f71-46d4-b54b-aae3897542c0)
 
-
-
-
-
+---
 ### **Reference**
 
-Jin, S., Guerrero-Juarez, C. F., Zhang, L., Chang, I., Ramos, R., Kuan,
-C. H., … & Nie, Q. (2021). Inference and analysis of cell-cell
-communication using CellChat. Nature communications, 12(1), 1-20. 
+Jin, S., Guerrero-Juarez, C. F., Zhang, L., Chang, I., Ramos, R., Kuan, C. H., … & Nie, Q. (2021). Inference and analysis of cell-cell communication using CellChat. Nature communications, 12(1), 1-20. 
 
-Zhang, Z., Cui, F., Cao, C., Wang, Q., & Zou, Q. (2022). Single-cell RNA
-analysis reveals the potential risk of organ-specific cell types
-vulnerable to SARS-CoV-2 infections. Computers in biology and medicine,
-140, 105092.
+Jin, S., Plikus, M.V. & Nie, Q. (2025). CellChat for systematic analysis of cell–cell communication from single-cell transcriptomics. Nat Protoc, 20, 180–219.
+
+Sikkema, L., Ramírez-Suástegui, C., Strobl, D.C., … & Theis, F.J. (2023). An integrated cell atlas of the lung in health and disease. Nat Med, 29, 1563–1577.
