@@ -1,11 +1,10 @@
 QC1-DropletUtils
 ================
-2024-07-08
+2024-07-16
 
 ### **Library**
 
-Here, we describe a short but to-the-point quality control process using
-DropletUtils to remove unusable or low quality cells.
+Filter out empty droplets (mainly consist of ambient RNA)
 
 ``` r
 library(Seurat)
@@ -13,6 +12,8 @@ library(scater)
 library(DropletUtils)
 library(scran)
 library(ggplot2)
+
+set.seed(42) # for reproducibility
 ```
 
 ### **Set directory path**
@@ -21,12 +22,7 @@ Set the path to load or save data.
 
 ``` r
 rdatadir = '/BiO/home/data/QC/'
-ranaldir = '/BiO/home/edu03/QC_1/'  # /home/username/QC_1/
-```
-
-Make analysis directory if it does not exist
-```r
-if (!dir.exists(ranaldir)) { dir.create(ranaldir, recursive = TRUE) }
+save_path = '/home/sjcho/lectures/KOGO2025/2.QC_part1_remove_empty_droplets/outs'
 ```
 
 ### **Load Data**
@@ -68,16 +64,22 @@ rawsce_1
 ### **Run DropletUtils**
 
 To remove empty droplets, use DropletUtils for each data.
-
-``` r
+```
+### Run DropletUils
 rawsce_list <- c('rawsce_1', 'rawsce_2', 'rawsce_3', 'rawsce_4', 'rawsce_5',
                  'rawsce_6', 'rawsce_7', 'rawsce_8', 'rawsce_9', 'rawsce_12')
 
 for (i in 1:length(rawsce_list)) {
   rawsce <- get(rawsce_list[i])
-  
   br.out <- barcodeRanks(counts(rawsce))
   
+  o <- order(br.out$rank)
+  e.out <- emptyDrops(counts(rawsce))  ## Cells that have UMI counts lower than 100 (by defualt) are empty cells.
+  print(table(Sig=e.out$FDR <= 0.05, Limited=e.out$Limited))
+
+  is.cell <- e.out$FDR <= 0.05
+  print(sum(is.cell, na.rm=TRUE))
+
   p <- ggplot(data.frame(br.out), aes(x = rank, y = total)) + 
     geom_point() + 
     scale_x_continuous(trans = "log10") +
@@ -85,20 +87,10 @@ for (i in 1:length(rawsce_list)) {
     ggtitle(rawsce_list[i]) +
     theme_classic()
   
-  o <- order(br.out$rank)
-  
-  set.seed(2023)
-  e.out <- emptyDrops(counts(rawsce))  ## Cells that have UMI counts lower than 100 are empty cells.
-  print(table(Sig=e.out$FDR <= 0.05, Limited=e.out$Limited))
-
-  is.cell <- e.out$FDR <= 0.05
-  print(sum(is.cell, na.rm=TRUE))
-  
   p <- p + geom_hline(yintercept=min(br.out$fitted[o], na.rm=TRUE), color="red", linetype="dashed")
   p <- p + geom_hline(yintercept=metadata(br.out)$knee, color="dodgerblue", linetype="dashed")
   p <- p + geom_hline(yintercept=min(metadata(br.out)$inflection), color="forestgreen", linetype="dashed")
-
-  ggsave(filename = paste0(ranaldir, 'DropletUtils_', rawsce_list[i], '.png'), plot = p)
+  ggsave(filename = paste0(save_path, '/DropletUtils_', rawsce_list[i], '.png'), plot = p)
   
   colnames(rawsce) = colData(rawsce)$Barcode
   rawsce <- rawsce[,which(e.out$FDR <= 0.05)]
