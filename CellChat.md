@@ -13,12 +13,12 @@ library(CellChat)
 ### **Load the Data**
 
 ``` r
-seurat <- readRDS("/BiO/data/HLCA_pulmonary_fibrosis_immune_sampled.rds")
+seurat <- readRDS("/BiO/data/HLCA_pulmonary_fibrosis_immune.rds")
 seurat
 ```
 
     ## An object of class Seurat 
-    ## 19354 features across 7408 samples within 1 assay 
+    ## 19354 features across 7782 samples within 1 assay 
     ## Active assay: RNA (19354 features, 0 variable features)
     ##  3 layers present: counts, data, scale.data
     ##  4 dimensional reductions calculated: pca, umap, harmony, umap.harmony
@@ -28,12 +28,14 @@ seurat
 ``` r
 DimPlot(seurat, group.by = 'celltype', reduction = "umap.harmony")
 ```
-<img width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/bbbf95c3-7d8e-449b-90b7-7825a3994a35" />
+
+<img width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/122061dd-b366-4e14-938e-8a305e3dcaa6" />
 
 ``` r
 DimPlot(seurat, group.by = 'celltype', reduction = "umap.harmony", split.by = "disease")
 ```
-<img width="600" height="320" alt="image" src="https://github.com/user-attachments/assets/86a5a685-67ab-46ca-868d-c8820abf3c48" />
+
+<img width="600" height="320" alt="image" src="https://github.com/user-attachments/assets/217f66a5-7c18-49d1-8f44-0197c1be3b28" />
 
 ---
 ### **Input data processing**
@@ -62,7 +64,9 @@ cellchat_PF <- createCellChat(object = expr_PF, meta = meta_PF, group.by = "cell
 CellChatDB <- CellChatDB.human # # use CellChatDB.mouse if running on mouse data
 showDatabaseCategory(CellChatDB)
 ```
-<img width="500" height="400" alt="image" src="https://github.com/user-attachments/assets/792c759b-f82d-41d0-9edc-b7000450b409" />
+
+<img width="1770" height="312" alt="image" src="https://github.com/user-attachments/assets/a52532d5-fec7-4073-b64d-7435b1975968" />
+
 
 **3. Subset the expression data using CellChatDB genes**
 ``` r
@@ -106,6 +110,7 @@ df_net_PF <- subsetCommunication(cellchat_PF)
 ```
 <img width="1770" height="299" alt="image" src="https://github.com/user-attachments/assets/55c45fb2-c047-44b2-bf08-67e27712b427" />
 
+
 **4. Infer the cell-cell communication at a signaling pathway level**
 ``` r
 cellchat_PF <- computeCommunProbPathway(cellchat_PF)
@@ -128,7 +133,7 @@ saveRDS(cellchat_PF, file = "/BiO/home/edu03/cellchat_lung_PF.rds")
 groupSize_PF <- as.numeric(table(cellchat_PF@idents))
 netVisual_circle(cellchat_PF@net$weight, vertex.weight = groupSize_PF, weight.scale = T, label.edge= F)
 ```
-<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/e5f9a27e-832a-4010-aea8-f77723f74cf4" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/4deb6b30-54f5-4f46-a51b-a47da4354cca" />
 
 ---
 ### **Identify signaling roles and major contributing signaling**
@@ -142,72 +147,56 @@ cellchat_PF <- netAnalysis_computeCentrality(cellchat_PF, slot.name = "netP")
 pathways.show <- "TGFb"
 netAnalysis_signalingRole_network(cellchat_PF, signaling = pathways.show, width = 6, height = 2, font.size = 10)
 ```
-<img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/87c8bee5-e98f-43a1-b930-c22317d7a2ff" />
+<img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/c08a1806-da05-4332-9d89-8664c369c749" />
 
 ``` r
 netVisual_bubble(cellchat_PF, sources.use = c(3:4), targets.use = c(1:2), signaling = c("TGFb"), remove.isolate = TRUE)
 ```
-<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/7d567df2-e49d-4de0-a5f1-5cef6d6dc719" />
+<img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/1d6c1356-573c-4baf-88cd-deb657c47892" />
 
 ``` r
 netVisual_chord_gene(cellchat_PF, sources.use = c(3:4), targets.use = c(1:2), signaling = c("TGFb"))
 ```
-<img width="300" height="320" alt="image" src="https://github.com/user-attachments/assets/9c8a0258-e66e-4249-9512-c3e47a9bb3e3" />
+<img width="300" height="320" alt="image" src="https://github.com/user-attachments/assets/b58c211f-ba2d-48ac-9ee9-d789e717282b" />
 
 ---
-### Process same process for normal group (to be updated)
-
+### Process same process for normal group
+**1. Input data processing & Running CellChat**
 ```r
-healthy <- rownames(meta)[meta$group == 'HC' & meta$celltype %in% c('M1','M2','mDC','T','NK','B','Epithelial','pDC','Plasma','Mast')]
-healthy_input = expr[, healthy]
-healthy_meta = meta[healthy, ]
-healthy_meta$celltype = as.character(healthy_meta$celltype)
+seurat_NM <- subset(seurat, subset = disease == "normal")
+cellchat_NM <- createCellChat(object = seurat_NM, group.by = "celltype", assay = "RNA")
+
+cellchat_NM@DB <- CellChatDB
+
+cellchat_NM <- subsetData(cellchat_NM)
+
+cellchat_NM <- identifyOverExpressedGenes(cellchat_NM)
+cellchat_NM <- identifyOverExpressedInteractions(cellchat_NM)
+
+cellchat_NM <- smoothData(cellchat_NM, adj = PPI.human)
+
+cellchat_NM <- computeCommunProb(cellchat_NM, raw.use = FALSE)
+cellchat_NM <- filterCommunication(cellchat_NM, min.cells = 0)
+cellchat_NM <- computeCommunProbPathway(cellchat_NM)
+cellchat_NM <- aggregateNet(cellchat_NM)
+
 ```
-
-```r
-cellchat_HC <- createCellChat(object = healthy_input, meta = healthy_meta, group.by = 'celltype')
+**2. Visualization**
+``` r
+groupSize_NM <- as.numeric(table(cellchat_NM@idents))
+netVisual_circle(cellchat_NM@net$weight, vertex.weight = groupSize_NM,
+                 weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
 ```
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/b6d96df9-d78f-43f8-be31-376cf26baf6c" />
 
-    ## [1] "Create a CellChat object from a data matrix"
-    ## Set cell identities for the new CellChat object 
-    ## The cell groups used for CellChat analysis are  B Epithelial M1 M2 Mast mDC NK pDC Plasma T 
-
-```r
-cellchat_HC <- addMeta(cellchat_HC, meta = healthy_meta)
-cellchat_HC <- setIdent(cellchat_HC, ident.use = 'celltype')
-groupSize_HC <- as.numeric(table(cellchat_HC@idents))
-cellchat_HC@DB <- CellChatDB
-```
-
-```r
-# Preprocessing the expression data for cell-cell communication analysis
-cellchat_HC <- subsetData(cellchat_HC)
-cellchat_HC <- identifyOverExpressedGenes(cellchat_HC)
-cellchat_HC <- identifyOverExpressedInteractions(cellchat_HC)
-cellchat_HC <- projectData(cellchat_HC, PPI.human)
-
-# Compute the communication probability and infer cellular communication network
-cellchat_HC <- computeCommunProb(cellchat_HC)
-cellchat_HC <- filterCommunication(cellchat_HC, min.cells = 0)
-
-# Extract the inferred cellular communication network as a data frame
-df.net_HC <- subsetCommunication(cellchat_HC)
-
-# Infer the cell-cell communication at a signaling pathway level
-cellchat_HC <- computeCommunProbPathway(cellchat_HC)
-
-# Calculate the aggregated cell-cell communication network
-cellchat_HC <- aggregateNet(cellchat_HC)
-
+``` r
 # Compute centrality
-cellchat_HC <- netAnalysis_computeCentrality(cellchat_HC, slot.name = "netP")
+cellchat_NM <- netAnalysis_computeCentrality(cellchat_NM, slot.name = "netP")
 
+pathways.show <- "TGFb"
+netAnalysis_signalingRole_network(cellchat_NM, signaling = pathways.show, width = 6, height = 2, font.size = 10)
 ```
-### **Visualization**
-```
-netVisual_circle(cellchat_HC@net$weight, vertex.weight = groupSize_HC, weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
-```
-![image](https://github.com/CB-postech/Workshop-hands-on-materials/assets/98519284/77257d17-3f71-46d4-b54b-aae3897542c0)
+<img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/099a98fc-f133-4b74-842d-78cb731a1891" />
 
 ---
 ### **Reference**
