@@ -44,7 +44,7 @@ The structure of SCE object is like below.
 
 
 ```R
-sce <- DropletUtils_rawsce_1
+sce <- DropletUtils_rawsce_5
 sce
 
 ## class: SingleCellExperiment 
