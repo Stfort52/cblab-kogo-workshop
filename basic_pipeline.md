@@ -1,3 +1,6 @@
+# Basic Pipeline
+---------------------------------
+2025.07.18
 1. Normalization
 2. Batch-aware HVG selection
 3. Dimensional Reduction
