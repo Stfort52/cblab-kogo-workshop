@@ -151,21 +151,18 @@ ggsave(filename = paste0(save_path, '/sce5_PCA_use.png'), plot = p, width = 7, h
 sce = sce[,sce$use]
 sce
 ```
-
-
     class: SingleCellExperiment 
-    dim: 36604 1823 
+    dim: 36604 1350 
     metadata(1): Samples
     assays(1): counts
     rownames(36604): MIR1302-2HG FAM138A ... Htag2 Htag3
     rowData names(3): ID Symbol Type
-    colnames(1823): AAACCCAAGGGTGAAA-1 AAACCCATCAGTCTTT-1 ...
-      TTTGTTGAGTTAGTGA-1 TTTGTTGTCTTCGACC-1
+    colnames(1350): AAACCCATCTGAACGT-1 AAACGAACAAGAGAGA-1 ...
+      TTTGGTTGTCGCTCGA-1 TTTGTTGGTGGGATTG-1
     colData names(15): Sample Barcode ... log10_detected use
     reducedDimNames(1): PCA_coldata
     mainExpName: NULL
     altExpNames(0):
-
 
 ### Process other samples
 Other samples can be processed in the same way. The same process is made into a function below.
