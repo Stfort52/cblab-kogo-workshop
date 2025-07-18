@@ -6,7 +6,8 @@
 3. Dimensional Reduction
 4. Batch-Correciton
 5. Annotation
-6. DEG Analysis
+6. celltypist prediction
+7. DEG Analysis
 
 
 ```R
