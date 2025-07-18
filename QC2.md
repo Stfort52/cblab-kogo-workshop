@@ -47,16 +47,14 @@ The structure of SCE object is like below.
 sce <- DropletUtils_rawsce_5
 sce
 ```
-
-
     class: SingleCellExperiment 
-    dim: 36604 13081 
+    dim: 36604 4096 
     metadata(1): Samples
     assays(1): counts
     rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
     rowData names(3): ID Symbol Type
-    colnames(13081): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
-      TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
+    colnames(4096): AAACCCACATCCTAAG-1 AAACCCATCAAGCTGT-1 ...
+      TTTGTTGGTGGGATTG-1 TTTGTTGTCTTCGACC-1
     colData names(2): Sample Barcode
     reducedDimNames(0):
     mainExpName: NULL
