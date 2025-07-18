@@ -35,41 +35,6 @@ load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_9.RData')
 load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_12.RData')
 ```
 
-
-```R
-
-### check
-DropletUtils_rawsce_1
-
-# class: SingleCellExperiment 
-# dim: 36604 13081 
-# metadata(1): Samples
-# assays(1): counts
-# rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
-# rowData names(3): ID Symbol Type
-# colnames(13081): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
-#   TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
-# colData names(2): Sample Barcode
-# reducedDimNames(0):
-# mainExpName: NULL
-# altExpNames(0):
-```
-
-
-    class: SingleCellExperiment 
-    dim: 36604 13081 
-    metadata(1): Samples
-    assays(1): counts
-    rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
-    rowData names(3): ID Symbol Type
-    colnames(13081): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
-      TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
-    colData names(2): Sample Barcode
-    reducedDimNames(0):
-    mainExpName: NULL
-    altExpNames(0):
-
-
 ### Process one sample for example
 A SCE object contains a gene-by-cell count matrix, gene data (gene annotation, etc) and cell data (sample information, experimental condition information, etc). Gene information will be stored in rowData(SCE), and cell information is stored in colData(SCE). A gene-by-cell matrix is stored as a sparse matrix in a SCE object. Ensembl gene ids is transformed into gene symbol for eaiser further analysis.
 
