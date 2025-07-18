@@ -128,10 +128,6 @@ p <- ggplot(data.frame(colData(sce)), aes(x = detected)) +
 ggsave(filename = paste0(save_path, '/sce5_detected.png'), plot = p, width = 6, height = 6)
 ```
 
-    Warning message:
-    “[1m[22mRemoved 3 rows containing missing values or values outside the scale range (`geom_bar()`).”
-
-
 Low-quality cells are filtered out and can be identified by the PCA plot.
 
 
