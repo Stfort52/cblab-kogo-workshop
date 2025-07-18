@@ -1,133 +1,231 @@
-QC2-Integration
+QC2-remove low quality cells
 ================
-2024-07-08
+2025-07-18
+## QC2 Remove low-quality cells
+### Remove low-quality for downstream analysis
+### Each dataset has own QC threshold. And these thresholds should be determined by reasonable evidences.
+### If you face any low-quality cell in downstream, re-run QC with new thresholds!
 
-### **Library**
+### We obtained SingleCellExperiment(SCE) objects without estimated droplets from previous section. In this section, we will remove low quality cells with large mitochondrial proportions, low RNA contents or low detected gene numbers.
 
-We obtained SingleCellExperiment(SCE) objects without estimated droplets
-from previous section. In this section, we will remove low quality cells
-with large mitochondrial proportions, low RNA contents or low detected
-gene numbers.
 
-``` r
+```R
 library(DropletUtils)
 library(dplyr)
 library(scater)
+
+set.seed(42) # for reproducibility
+
+save_path = 'QC2'
 ```
 
-### **Process one sample for example**
 
-A SCE object contains a gene-by-cell count matrix, gene data (gene
-annotation, etc) and cell data (sample information, experimental
-condition information, etc). Gene information will be stored in
-rowData(SCE), and cell information is stored in colData(SCE). A
-gene-by-cell matrix is stored as a sparse matrix in a SCE object.
-Ensembl gene ids is transformed into gene symbol for eaiser further
-analysis.
+```R
+### load
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_1.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_2.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_3.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_4.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_5.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_6.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_7.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_8.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_9.RData')
+load(file = '/BiO/data/process/QC2_data/DropletUtils_filtered_sce_12.RData')
+```
 
-Since there are 10 samples, we will process one sample first and use
-functions for other samples.
+
+```R
+
+### check
+DropletUtils_rawsce_1
+
+# class: SingleCellExperiment 
+# dim: 36604 13081 
+# metadata(1): Samples
+# assays(1): counts
+# rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
+# rowData names(3): ID Symbol Type
+# colnames(13081): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
+#   TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
+# colData names(2): Sample Barcode
+# reducedDimNames(0):
+# mainExpName: NULL
+# altExpNames(0):
+```
+
+
+    class: SingleCellExperiment 
+    dim: 36604 13081 
+    metadata(1): Samples
+    assays(1): counts
+    rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
+    rowData names(3): ID Symbol Type
+    colnames(13081): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
+      TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
+    colData names(2): Sample Barcode
+    reducedDimNames(0):
+    mainExpName: NULL
+    altExpNames(0):
+
+
+### Process one sample for example
+A SCE object contains a gene-by-cell count matrix, gene data (gene annotation, etc) and cell data (sample information, experimental condition information, etc). Gene information will be stored in rowData(SCE), and cell information is stored in colData(SCE). A gene-by-cell matrix is stored as a sparse matrix in a SCE object. Ensembl gene ids is transformed into gene symbol for eaiser further analysis.
+
+Since there are 10 samples, we will process one sample first and use functions for other samples.
 
 The structure of SCE object is like below.
 
-``` r
+
+```R
 sce <- DropletUtils_rawsce_1
 sce
+
+## class: SingleCellExperiment 
+## dim: 36604 12250
+## metadata(1): Samples
+## assays(1): counts
+## rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
+## rowData names(3): ID Symbol Type
+## colnames(12252): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
+##   TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
+## colData names(2): Sample Barcode
+## reducedDimNames(0):
+## mainExpName: NULL
+## altExpNames(0):
 ```
 
-    ## class: SingleCellExperiment 
-    ## dim: 36604 12250
-    ## metadata(1): Samples
-    ## assays(1): counts
-    ## rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
-    ## rowData names(3): ID Symbol Type
-    ## colnames(12252): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
-    ##   TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
-    ## colData names(2): Sample Barcode
-    ## reducedDimNames(0):
-    ## mainExpName: NULL
-    ## altExpNames(0):
 
-To remove low quality cells, several values such as number of unique
-molecular identifiers (UMIs) per cell, number of genes detected per
-cell, the percentage of UMIs assigned to mitochondrial (MT) genes are
-calculated using addPerCellQC() of scater R package.
+    class: SingleCellExperiment 
+    dim: 36604 13081 
+    metadata(1): Samples
+    assays(1): counts
+    rownames(36604): ENSG00000243485 ENSG00000237613 ... Htag2 Htag3
+    rowData names(3): ID Symbol Type
+    colnames(13081): AAACCCAAGGCTGAAC-1 AAACCCAAGGGTGAAA-1 ...
+      TTTGTTGTCTTCGACC-1 TTTGTTGTCTTGGTCC-1
+    colData names(2): Sample Barcode
+    reducedDimNames(0):
+    mainExpName: NULL
+    altExpNames(0):
 
-``` r
+
+To remove low quality cells, several values such as number of unique molecular identifiers (UMIs) per cell, number of genes detected per cell, the percentage of UMIs assigned to mitochondrial (MT) genes are calculated using addPerCellQC() of scater R package.
+
+
+
+```R
 rownames(sce) = uniquifyFeatureNames(rowData(sce)$ID, rowData(sce)$Symbol)
 
 mtgenes = rowData(sce)[grep("^MT-", rowData(sce)$Symbol),]$Symbol
 is.mito = rownames(sce) %in% mtgenes
 print(table(is.mito))
+## is.mito
+## FALSE  TRUE 
+## 36591    13
 ```
 
-    ## is.mito
-    ## FALSE  TRUE 
-    ## 36591    13
+    is.mito
+    FALSE  TRUE 
+    36591    13 
 
-``` r
+
+
+```R
+
 sce <- addPerCellQC(
   sce,
   subsets = list(MT=mtgenes),
-  percent_top = c(50, 100, 200, 500)
+  percent_top = c(50, 100, 200, 500), 
+  detection_limit = 5
 )
 
 sce$log10_sum = log10(sce$sum + 1)
 sce$log10_detected = log10(sce$detected + 1)
 
 sce <- sce[,sce$sum!=0]
+
 ```
 
-We define low-quality cells with \<500 UMIs, \>15% MT gene percents or
-\<100 detected genes. Criteria is visualized as histogram below.
+We define low-quality cells with <500 UMIs, >15% MT gene percents or <100 detected genes. Criteria is visualized as histogram below.
 
-``` r
+
+```R
 umi=500
 mtpct=15
 detect=100
 
-ggplot(data.frame(colData(sce)), aes(x = log10_sum)) + 
-  geom_histogram() +
+p <- ggplot(data.frame(colData(sce)), aes(x = log10_sum)) + 
+  geom_histogram(bins = 150) +
   theme_bw() +
   geom_vline(xintercept = log10(umi), color="red", linetype="dashed")
+ggsave(filename = paste0(save_path, '/sce5_log10_sum.png'), plot = p, width = 6, height = 6)
 
-ggplot(data.frame(colData(sce)), aes(x = subsets_MT_percent)) + 
-  geom_histogram() +
+p <- ggplot(data.frame(colData(sce)), aes(x = subsets_MT_percent)) + 
+  geom_histogram(bins = 150) +
   theme_bw() +
   geom_vline(xintercept = mtpct, color="red", linetype="dashed")
+ggsave(filename = paste0(save_path, '/sce5_MT_pct.png'), plot = p, width = 6, height = 6)
 
-ggplot(data.frame(colData(sce)), aes(x = detected)) + 
-  geom_histogram() +
+p <- ggplot(data.frame(colData(sce)), aes(x = detected)) + 
+  geom_histogram(bins = 150) +
   theme_bw() +
-  geom_vline(xintercept = detect, color="red", linetype="dashed")
+  geom_vline(xintercept = detect, color="red", linetype="dashed") + 
+  ylim(0, 500)
+ggsave(filename = paste0(save_path, '/sce5_detected.png'), plot = p, width = 6, height = 6)
 ```
 
-Low-quality cells are filtered out and can be identified by the PCA
-plot.
+    Warning message:
+    “[1m[22mRemoved 3 rows containing missing values or values outside the scale range (`geom_bar()`).”
 
-``` r
+
+Low-quality cells are filtered out and can be identified by the PCA plot.
+
+
+```R
 filter_by_total_counts = sce$sum > umi
 filter_by_mt_percent = sce$subsets_MT_percent < mtpct
 filter_by_nfeature = sce$detected > detect
+
+sce <- runColDataPCA(sce, variables = list("sum", "detected", "subsets_MT_percent", "percent.top_500"))
 
 sce$use <- (
   filter_by_total_counts &
     filter_by_mt_percent &
     filter_by_nfeature
 )
+
+p <- plotReducedDim(sce, dimred="PCA_coldata", colour_by="use")
+ggsave(filename = paste0(save_path, '/sce5_PCA_use.png'), plot = p, width = 7, height = 6)
 ```
 
-``` r
+
+```R
 sce = sce[,sce$use]
 sce
 ```
 
-### **Process other samples**
 
-Other samples can be processed in the same way. The same process is made
-into a function below.
+    class: SingleCellExperiment 
+    dim: 36604 1823 
+    metadata(1): Samples
+    assays(1): counts
+    rownames(36604): MIR1302-2HG FAM138A ... Htag2 Htag3
+    rowData names(3): ID Symbol Type
+    colnames(1823): AAACCCAAGGGTGAAA-1 AAACCCATCAGTCTTT-1 ...
+      TTTGTTGAGTTAGTGA-1 TTTGTTGTCTTCGACC-1
+    colData names(15): Sample Barcode ... log10_detected use
+    reducedDimNames(1): PCA_coldata
+    mainExpName: NULL
+    altExpNames(0):
 
-``` r
+
+### Process other samples
+Other samples can be processed in the same way. The same process is made into a function below.
+
+
+```R
+
 preprocess <- function(sce){
   rownames(sce) = uniquifyFeatureNames(rowData(sce)$ID, rowData(sce)$Symbol)
   
@@ -147,13 +245,13 @@ preprocess <- function(sce){
   sce <- sce[,sce$sum!=0]
   return(sce)
 }
-```
 
-``` r
 filtering <- function(sce,umi,mtpct,detect){
   filter_by_total_counts = sce$sum > umi
   filter_by_mt_percent = sce$subsets_MT_percent < mtpct
   filter_by_nfeature = sce$detected > detect
+  
+  sce <- runColDataPCA(sce, variables = list("sum", "detected", "subsets_MT_percent", "percent.top_500"))
   
   sce$use <- (
     filter_by_total_counts &
@@ -161,14 +259,16 @@ filtering <- function(sce,umi,mtpct,detect){
       filter_by_nfeature
   )
   
+  plotReducedDim(sce, dimred="PCA_coldata", colour_by="use")
+  
   sce = sce[,sce$use]
   return(sce)
 }
 ```
 
-### **Remove low-quality cells**
 
-``` r
+```R
+
 umi=500
 mtpct=15
 detect=100
@@ -204,23 +304,15 @@ sce.12 <- preprocess(DropletUtils_rawsce_12)
 sce.12 <- filtering(sce.12,umi,mtpct,detect)
 ```
 
-### **Change Cellbarcode name**
+### Change Cellbarcode name
+Each cell has their own cellbarcode. To prevent errors due to the presence of the same cellbarcode in other samples, the sample information is added to the end of each cellbarcode. For example, cellbarcode looks like below.
 
-Each cell has their own cellbarcode. To prevent errors due to the
-presence of the same cellbarcode in other samples, the sample
-information is added to the end of each cellbarcode. For example,
-cellbarcode looks like below.
 
-``` r
-head(colnames(sce.1))
-```
+```R
+# > head(colnames(sce.1))
+# [1] "AAACCCAAGGGTGAAA-1" "AAACCCATCAGTCTTT-1" "AAACGAAGTGCGGATA-1"
+# [4] "AAACGAATCGTAACTG-1" "AAACGCTGTCTCACGG-1" "AAAGGATTCGTGTCAA-1"
 
-    ## [1] "AAACCCAAGGCTGAAC-1" "AAACCCAAGGGTGAAA-1" "AAACCCAGTTCGGGTC-1"
-    ## [4] "AAACCCAGTTGTTGTG-1" "AAACCCATCAGTCTTT-1" "AAACCCATCCGCGGAT-1"
-
-After changing cellbarcode, it looks like below.
-
-``` r
 colnames(sce.1) <- paste0(substring(colnames(sce.1),1,16),"-L1")
 colnames(sce.2) <- paste0(substring(colnames(sce.2),1,16),"-L2")
 colnames(sce.3) <- paste0(substring(colnames(sce.3),1,16),"-L3")
@@ -232,19 +324,17 @@ colnames(sce.8) <- paste0(substring(colnames(sce.8),1,16),"-L8")
 colnames(sce.9) <- paste0(substring(colnames(sce.9),1,16),"-L9")
 colnames(sce.12) <- paste0(substring(colnames(sce.12),1,16),"-L12")
 
-head(colnames(sce.1))
+## After changing cellbarcode, it looks like below.
+# > head(colnames(sce.1))                                           
+# [1] "AAACCCAAGGGTGAAA-L1" "AAACCCATCAGTCTTT-L1" "AAACGAAGTGCGGATA-L1"
+# [4] "AAACGAATCGTAACTG-L1" "AAACGCTGTCTCACGG-L1" "AAAGGATTCGTGTCAA-L1"
 ```
 
-    ## [1] "AAACCCAAGGCTGAAC-L1" "AAACCCAAGGGTGAAA-L1" "AAACCCAGTTCGGGTC-L1"
-    ## [4] "AAACCCAGTTGTTGTG-L1" "AAACCCATCAGTCTTT-L1" "AAACCCATCCGCGGAT-L1"
+### Sample Information
+For further analysis, combine all SCE objects and give sample informations (if the sample comes from CONTROL, ASYMPTOMATIC or SYMPTOMATIC condition)
 
-### **Sample Information**
 
-For further analysis, combine all SCE objects and give sample
-informations (if the sample comes from CONTROL, ASYMPTOMATIC or
-SYMPTOMATIC condition)
-
-``` r
+```R
 sce <- cbind(sce.1, sce.2, sce.3, sce.4, sce.5, sce.6, sce.7, sce.8, sce.9, sce.12)
 sce$library <-'NA'
 sce$library[grep('20094_0001_A_B',sce$Sample)] <- 'L1'
@@ -258,24 +348,19 @@ sce$library[grep('20094_0008_A_B',sce$Sample)] <- 'L8'
 sce$library[grep('20094_0009_A_B',sce$Sample)] <- 'L9'
 sce$library[grep('20094_0012_A_B',sce$Sample)] <- 'L12'
 
-table(sce$library)
-```
+## table(sce$library)
+##   L1  L12   L2   L3   L4   L5   L6   L7   L8   L9 
+## 1823 3293 2166 1835  833 1350  324  419 1345  678
 
-    ## 
-    ##   L1  L12   L2   L3   L4   L5   L6   L7   L8   L9 
-    ## 1823 3293 2166 1835  833 1350  324  419 1345  678
-
-``` r
 sce$Condition <- 'SYMPTOMATIC'
 sce$Condition[sce$library == 'L12'] <- 'CONTROL'
 sce$Condition[sce$library %in% c('L4','L5','L6')] <- 'ASYMPTOMATIC'
 
-table(sce$Condition)
+## table(sce$Condition)
+## ASYMPTOMATIC      CONTROL  SYMPTOMATIC 
+##         2507         3293         8266
 ```
 
-    ## 
-    ## ASYMPTOMATIC      CONTROL  SYMPTOMATIC 
-    ##         2507         3293        8266
 
 ### **Reference**
 
