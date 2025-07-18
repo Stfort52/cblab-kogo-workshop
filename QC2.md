@@ -6,7 +6,8 @@ Remove low-quality for downstream analysis <br>
 Each dataset has own QC threshold. And these thresholds should be determined by reasonable evidences. <br>
 If you face any low-quality cell in downstream, re-run QC with new thresholds! <br>
 
-### We obtained SingleCellExperiment(SCE) objects without estimated droplets from previous section. In this section, we will remove low quality cells with large mitochondrial proportions, low RNA contents or low detected gene numbers.
+We obtained SingleCellExperiment(SCE) objects without estimated droplets from previous section. <br>
+In this section, we will remove low quality cells with large mitochondrial proportions, low RNA contents or low detected gene numbers.
 
 
 ```R
