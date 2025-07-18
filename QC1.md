@@ -19,7 +19,7 @@ library(ggplot2)
 
 set.seed(42) # for reproducibility
 
-rdatadir = '/home/sjcho/lectures/KOGO2025/QC_data/'
+rdatadir = '/BiO/data/QC/'
 save_path = 'QC1'
 ```
 
