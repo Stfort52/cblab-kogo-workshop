@@ -16,32 +16,6 @@ save_path = "basic_pipeline"
 setwd(save_path)
 ```
 
-    Warning message:
-    “package ‘Seurat’ was built under R version 4.3.2”
-    Loading required package: SeuratObject
-    
-    Loading required package: sp
-    
-    Warning message:
-    “package ‘sp’ was built under R version 4.3.3”
-    
-    Attaching package: ‘SeuratObject’
-    
-    
-    The following object is masked from ‘package:base’:
-    
-        intersect
-    
-    
-    Warning message:
-    “package ‘harmony’ was built under R version 4.3.3”
-    Loading required package: Rcpp
-    
-    Warning message:
-    “package ‘Rcpp’ was built under R version 4.3.3”
-    Warning message:
-    “package ‘ggplot2’ was built under R version 4.3.3”
-
 
 ### 0. load data
 data from https://www.nature.com/articles/s41591-023-02327-2<br>
@@ -122,28 +96,12 @@ table(so$study)
 source('/BiO/data/batch_aware_in_seurat.R')
 ```
 
-    Loading required package: reticulate
-    
-    Warning message:
-    “package ‘reticulate’ was built under R version 4.3.3”
-
-
 
 ```R
 batch_key = 'study'
 nHVG = 2000
 batch_aware_in_seurat(so, batch_key = batch_key, nHVG = nHVG, conda_env = "/BiO/prog/miniforge3/envs/QC", save_path = save_path)
 ```
-
-    Warning message:
-    “No layers found matching search pattern provided”
-    Warning message:
-    “No layers found matching search pattern provided”
-    Warning message:
-    “Layer ‘scale.data’ is empty”
-    Warning message:
-    “Assay RNA changing from Assay5 to Assay”
-
 
 
 ```R
@@ -216,9 +174,6 @@ source("/BiO/data/celltypist_in_seurat.R")
 celltypist_in_seurat(so, conda_env = "/BiO/prog/miniforge3/envs/QC", save_path = save_path, model_path = '/BiO/data/Immune_All_High.pkl')
 ```
 
-    Warning message:
-    “Assay RNA changing from Assay5 to Assay”
-
 
 ### 6. Marker gene expression visualization
 
@@ -251,14 +206,6 @@ ggsave(p, filename = paste0(save_path, "/dot_plot_celltype_markers.png"), width 
 
 # saveRDS(so, file = paste0(save_path, "/HLCA_pulmonary_fibrosis_immune.rds"))
 ```
-
-    Warning message:
-    “[1m[22mThe `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
-    [36mℹ[39m Please use the `rows` argument instead.
-    [36mℹ[39m The deprecated feature was likely used in the [34mSeurat[39m package.
-      Please report the issue at [3m[34m<https://github.com/satijalab/seurat/issues>[39m[23m.”
-    Warning message:
-    “Scaling data with a low number of groups may produce misleading results”
 
 
 
