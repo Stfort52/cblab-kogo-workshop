@@ -27,6 +27,15 @@ seurat <- readRDS("/BiO/data/HLCA_pulmonary_fibrosis_immune.rds")
 seurat
 ```
 
+```r
+DimPlot(seurat, reduction = "umap.harmony", group.by = "celltype",
+    label = TRUE, label.size = 10, repel = TRUE) +
+    NoLegend() + ggtitle(NULL)
+ggsave(paste0(OUT, "/umap-total.png"), width = 7, height = 7, dpi = 300)
+```
+
+<img src="/images/monocle/umap-total.png" width="400" height="400">
+
 Since we want to draw a trajectory graph of T cells, we will subset only the T cells from the whole dataset and re-normalize.
 
 ```r
@@ -80,6 +89,8 @@ plot_pc_variance_explained(cds) +
 ggsave(paste0(OUT, "/elbow-PCA.png"), width = 7, height = 7, dpi = 300)
 ```
 
+<img src="/images/monocle/elbow-PCA.png" width="400" height="400">
+
 ```r
 cds <- preprocess_cds(cds, "PCA", num_dim = 10, norm_method = "none", use_genes = hvg)
 ```
@@ -105,6 +116,8 @@ plot_cells(cds, color_cells_by = "study",
 ggsave(paste0(OUT, "/monocle_umap-study-bfCorrection.png"), width = 9, height = 7, dpi = 300)
 ```
 
+<img src="/images/monocle/monocle_umap-study-bfCorrection.png" width="450" height="350">
+
 ```r
 cds <- align_cds(cds, alignment_group = "study")
 cds <- reduce_dimension(cds, preprocess_method = 'Aligned')
@@ -124,6 +137,8 @@ plot_cells(cds, color_cells_by = "study",
 ggsave(paste0(OUT, "/monocle_umap-study-afCorrection.png"), width = 9, height = 7, dpi = 300)
 ```
 
+<img src="/images/monocle/monocle_umap-study-afCorrection.png" width="450" height="350">
+
 ### Cluster cells and learn the trajectory graph
 
 After clustering, we will fit a principal graph within each partition using the learn_graph() function.
@@ -139,10 +154,30 @@ plot_cells(cds, color_cells_by = "cluster",
 ggsave(paste0(OUT, "/monocle_umap-clusters.png"), width = 7, height = 7, dpi = 300)
 ```
 
+<img src="/images/monocle/monocle_umap-clusters.png" width="350" height="350">
+
 ```r
 # learn graph
 cds = learn_graph(cds)
 ```
+
+```r
+plot_cells(cds, color_cells_by = "cluster",
+           show_trajectory_graph = TRUE,
+           label_principal_points = TRUE,
+           label_cell_groups = FALSE,
+           graph_label_size = 3,
+           trajectory_graph_color = "firebrick1", trajectory_graph_segment_size = 2,
+           cell_size = 1, cell_stroke = 1
+          ) +
+    theme(
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 15)
+    )
+ggsave(paste0(OUT, "/monocle_trajectory-clusters.png"), width = 8, height = 7, dpi = 300)
+```
+
+<img src="/images/monocle/monocle_trajectory-clusters.png" width="400" height="350">
 
 ### Order cells in pseudotime
 
@@ -164,6 +199,8 @@ plot_cells(cds, genes = c("CCR7", "LEF1"),
     scale_color_viridis_c(option = "magma")
 ggsave(paste0(OUT, "/monocle_root-expression.png"), width = 10.5, height = 5, dpi = 300)
 ```
+
+<img src="/images/monocle/monocle_root-expression.png" width="525" height="250">
 
 ```r
 # order cells while setting root principal node
@@ -190,6 +227,8 @@ plot_cells(cds, color_cells_by = "pseudotime",
 ggsave(paste0(OUT, "/monocle_pseudotime.png"), width = 8, height = 7, dpi = 300)
 ```
 
+<img src="/images/monocle/monocle_pseudotime.png" width="400" height="350">
+
 Check the expression of genes related to t cell function.
 
 ```r
@@ -211,6 +250,8 @@ plot_cells(cds, genes = c("CD4", "CD8A"),
 ggsave(paste0(OUT, "/monocle_expression1.png"), width = 10.5, height = 5, dpi = 300)
 ```
 
+<img src="/images/monocle/monocle_expression1.png" width="525" height="250">
+
 ```r
 # Cytotoxic CD8 T cells
 plot_cells(cds, genes = c("CCL5", "GZMK", "GNLY", "NKG7"),
@@ -230,6 +271,7 @@ plot_cells(cds, genes = c("CCL5", "GZMK", "GNLY", "NKG7"),
 ggsave(paste0(OUT, "/monocle_expression2.png"), width = 10.5, height = 10, dpi = 300)
 ```
 
+<img src="/images/monocle/monocle_expression2.png" width="525" height="500">
 
 ## Reference
 
