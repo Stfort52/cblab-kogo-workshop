@@ -80,7 +80,7 @@ cellchat_PF <- identifyOverExpressedGenes(cellchat_PF)
 cellchat_PF <- identifyOverExpressedInteractions(cellchat_PF)
 ```
 
-    ## The number of highly variable ligand-receptor pairs used for signaling inference is 872
+    ## The number of highly variable ligand-receptor pairs used for signaling inference is 874
 
 **5. (Optional) Smooth the gene expression because of shallow sequencing depth**
 ``` r
