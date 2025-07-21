@@ -134,7 +134,7 @@ so <- RunPCA(so, features = HVG$gene)
 ElbowPlot(so, ndims = 50)
 ```
 
-![png](basic_pipeline_files/basic_pipeline_16_1.png)
+![png](basic_pipeline_files/basic_pipeline_16_0.png)
 
 ```R
 PCs <- 8
@@ -250,6 +250,10 @@ DEG.patient.correction <- FindMarkers(so, ident.1 = Tcells.pulmonary, ident.2 = 
 EnhancedVolcano(DEG.vanilla, lab = rownames(DEG.vanilla), x = "avg_log2FC", y = "p_val_adj", FCcutoff = log2(1.5), pCutoff = 0.05)
 ```
 
+![png](basic_pipeline_files/basic_pipeline_33_0.png)
+
 ```R
 EnhancedVolcano(DEG.patient.correction, lab = rownames(DEG.patient.correction), x = "avg_log2FC", y = "p_val_adj", FCcutoff = log2(1.5), pCutoff = 0.05)
 ```
+
+![png](basic_pipeline_files/basic_pipeline_34_0.png)
