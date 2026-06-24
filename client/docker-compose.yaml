@@ -1,0 +1,12 @@
+# This compose is for running the client jupyterlab alone
+# So, it's not used when launching jupyterhub.
+
+services:
+  standalone-client:
+    build: .
+    user: root # start as root to remap UID
+    ports:
+      - "8888:8888"
+    environment:
+      - NB_UID=1001 # User you want to set
+      

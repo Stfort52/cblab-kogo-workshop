@@ -1,0 +1,41 @@
+services:
+  jupyterhub:
+    build: server
+    container_name: jupyterhub
+    environment:
+      - DOCKER_NETWORK_NAME=jupyterhub-network
+    # ports: 
+    #   - "8000:8000" # use this only if you can't HTTPS
+    volumes:
+      # Docker-out-of-Docker (DooD) socket
+      - /var/run/docker.sock:/var/run/docker.sock
+      # logos
+      - ./server/logo.png:/srv/jupyterhub/logo.png:ro
+      # config
+      - ./server/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
+      # jupyterhub data
+      - jupyterhub_data:/srv/jupyterhub
+    networks:
+      - jupyterhub-network
+    restart: always
+
+  caddy:
+    image: caddy:alpine
+    container_name: caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    # Insert a proper domain and point it to your server
+    command: caddy reverse-proxy --from <your-domain> --to jupyterhub:8000
+    networks:
+      - jupyterhub-network
+    depends_on:
+      - jupyterhub
+
+volumes:
+  jupyterhub_data:
+
+networks:
+  jupyterhub-network:
+    name: jupyterhub-network
