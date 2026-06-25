@@ -14,7 +14,7 @@ This is a [JupyterHub](https://jupyter.org/hub) server serving [JupyterLab](http
 ### 1. Clone the repository
 
 ```bash
-git clone (url will go here later)
+git clone https://github.com/Stfort52/cblab-kogo-workshop.git
 ```
 
 ### 2. Build the client (jupyterlab) Docker image
@@ -61,6 +61,8 @@ Also, you can set resource limits for the spawned containers. For example, to li
 c.DockerSpawner.cpu_limit = 2.0  # Limit to 2 CPU cores
 c.DockerSpawner.mem_limit = "4G"  # Limit to 4 GB of memory
 ```
+
+Remember that the `cpu_limit` numbers are in *logical* CPU cores.
 
 #### 3. Volume directory
 
