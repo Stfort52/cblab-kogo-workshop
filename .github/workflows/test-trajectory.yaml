@@ -28,7 +28,7 @@ jobs:
             --to notebook \
             --output monocle-out.ipynb \
             --execute \
-            monocle.ipynb
+            notebooks/monocle.ipynb
     
     - name: Upload failures
       if: failure()
