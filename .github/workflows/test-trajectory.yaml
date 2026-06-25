@@ -20,12 +20,13 @@ jobs:
         timeout 1800 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
-          -v ${{ github.workspace }}/notebooks:/workspace \
-          -v $HOST_DATA_DIR:/workspace/data:ro \
-          -w /workspace \
+          -v ${{ github.workspace }}/notebooks:/home/jovyan/notebooks \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
           kogo-scrna-jupyter:latest \
           jupyter nbconvert \
-            --inplace \
+            --to notebook \
+            --output monocle-out.ipynb \
             --execute \
             monocle.ipynb
     
