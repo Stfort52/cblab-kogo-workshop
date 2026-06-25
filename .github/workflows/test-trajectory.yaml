@@ -1,0 +1,40 @@
+name: scRNA-seq trajectory analysis
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Build
+      run: docker build -t kogo-scrna-jupyter client
+
+    - name: Run notebook
+      run: |
+        timeout 1800 docker run --rm \
+          --memory="8g" \
+          --cpus="2.4" \
+          -v ${{ github.workspace }}/notebooks:/workspace \
+          -v ${{ github.workspace }}/data:/workspace/data:ro \
+          -w /workspace \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --inplace \
+            --execute \
+            monocle.ipynb
+    
+    - name: Upload failures
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with: 
+        name: failed-notebooks
+        path: ${{ github.workspace }}/notebooks/*.ipynb
+        if-no-files-found: warn
+
+
