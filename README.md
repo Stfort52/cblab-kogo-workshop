@@ -65,7 +65,7 @@ services:
       - "8000:8000"
 ```
 
-This will fall back to HTTP, so I recommend that you don't never handle sensitive data there!
+This will fall back to HTTP, so I recommend that you never handle sensitive data there!
 
 ### 4. Start the JupyterHub server
 
