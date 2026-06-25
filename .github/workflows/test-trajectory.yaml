@@ -20,7 +20,7 @@ jobs:
         timeout 1800 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
-          -v ${{ github.workspace }}/notebooks:/home/jovyan/notebooks \
+          -v ${{ github.workspace }}/notebooks/monocle.ipynb:/home/jovyan/notebooks \
           -v $HOST_DATA_DIR:/home/jovyan/data:ro \
           -w /home/jovyan \
           kogo-scrna-jupyter:latest \
@@ -28,14 +28,14 @@ jobs:
             --to notebook \
             --output monocle-out.ipynb \
             --execute \
-            notebooks/monocle.ipynb
+            monocle.ipynb
     
     - name: Upload failures
       if: failure()
       uses: actions/upload-artifact@v4
       with: 
         name: failed-notebooks
-        path: ${{ github.workspace }}/notebooks/*.ipynb
+        path: ${{ github.workspace }}/notebooks/*-out.ipynb
         if-no-files-found: warn
     
     - name: Cleanup Image
