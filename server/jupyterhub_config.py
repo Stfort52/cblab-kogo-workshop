@@ -1,19 +1,20 @@
-import os
+import os, json
 c = get_config()
 
-
+with open("/run/secrets/password", "rt") as f:
+    PW = json.load(f)
 
 # 1. Authenticator
 c.JupyterHub.authenticator_class = "shared-password"
-c.SharedPasswordAuthenticator.user_password = ""
-c.SharedPasswordAuthenticator.admin_password = ""
-c.Authenticator.allowed_users = {f"edu{i:02d}" for i in range(1, 61)}
-c.Authenticator.admin_users = {f"edu{i:02d}" for i in range(1, 5)}
+c.SharedPasswordAuthenticator.user_password = PW["USER_PASS"]
+c.SharedPasswordAuthenticator.admin_password = PW["ADMIN_PASS"]
+c.Authenticator.allowed_users = {f"edu{i+1:02d}" for i in range(int(os.environ["N_USERS"]))}
+c.Authenticator.admin_users = {f"edu{i+1:02d}" for i in range(int(os.environ["N_ADMIN"]))}
 
 # 2. Spawner setup
 c.JupyterHub.spawner_class = "dockerspawner.DockerSpawner"
 # The image to spawn for users
-c.DockerSpawner.image = "kogo26-jupyterlab:latest"
+c.DockerSpawner.image = os.environ["IMAGE_NAME"]
 c.DockerSpawner.remove = True
 # This allows the containers to run usermod to change UID
 c.DockerSpawner.extra_create_kwargs.update({"user": "root"})  
@@ -31,13 +32,13 @@ c.DockerSpawner.extra_create_kwargs.update({
 
 c.DockerSpawner.volumes = {
     "jupyterhub-user-{username}": "/home/jovyan/work",
-    "/BiO/data": {
+    os.environ["DATA_PATH"]: {
         "bind": "/home/jovyan/data",
         "mode": "ro"
     }
 }
-c.Spawner.mem_limit = "10G"
-c.Spawner.cpu_limit = 2.0
+c.Spawner.mem_limit = os.environ["MEM_LIMIT"]
+c.Spawner.cpu_limit = float(os.environ["CPU_LIMIT"])
 
 def uid_remap(spawner):
     """Remap the UID of the user inside the container to match the host."""

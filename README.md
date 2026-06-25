@@ -24,73 +24,37 @@ cd client
 docker build -t kogo-workshop-client .
 ```
 
-### 3. Edit the JupyterHub configuration file
+### 3. Edit the Configuration
 
-You will find the `jupyterhub_config.py` file in the `server` directory.
-You might find the following parts useful to edit:
+#### General settings
 
-#### 1. Authenticator
+You will find the configs in the `.env` file.
+This contains the environment variables which gets injected in runtime, controlling the server.
 
-For a short-lived, on-site workshop, a shared password authenticator is usually sufficient. You can set the shared password in the `jupyterhub_config.py` file:
-
-```python
-c.SharedPasswordAuthenticator.user_password = "your_password_here" # more than 8 characters
-c.SharedPasswordAuthenticator.admin_password = "your_admin_password_here" # more than 24 characters
+```bash
+DATA_PATH=/BiO/data
+IMAGE_NAME=kogo-workshop-client
+N_USERS=60
+N_ADMIN=4
+MEM_LIMIT=8G
+CPU_LIMIT=2.0
+SERVER_ADDR=your-server-domain
 ```
 
-Also, change the number of users and admins if needed:
+#### Authentication
 
-```python
-c.Authenticator.allowed_users = {f"edu{i:02d}" for i in range(1, 61)}
-c.Authenticator.admin_users = {f"edu{i:02d}" for i in range(1, 5)}
-```
+For a short-lived, on-site workshop, a shared password authenticator is usually sufficient. You can set the shared password in the `pass.json` file. This will get injected in runtime too.
 
-If you want to use more advanced authentication methods, you can refer to the [JupyterHub documentation](https://jupyterhub.readthedocs.io/en/stable/getting-started/authenticators-users-basics.html). A PAM-based authenticator is a good option for a more secure setup, allowing users to log in with their own credentials.
-
-#### 2. Spawner setup
-
-If you want to use a different Docker image for the workshop, you can change the `image` parameter in the `DockerSpawner` configuration. Just be sure to build the Docker image before starting the JupyterHub server.
-
-```python
-c.DockerSpawner.image = "your-image-name:tag"
-```
-
-Also, you can set resource limits for the spawned containers. For example, to limit the CPU and memory usage:
-
-```python
-c.DockerSpawner.cpu_limit = 2.0  # Limit to 2 CPU cores
-c.DockerSpawner.mem_limit = "4G"  # Limit to 4 GB of memory
-```
-
-Remember that the `cpu_limit` numbers are in *logical* CPU cores.
-
-#### 3. Volume directory
-
-The data directory is set to `/BiO/data` by default.
-Change this bind mount to point appropirate directory.
-
-```py
-c.DockerSpawner.volumes = {
-    "jupyterhub-user-{username}": "/home/jovyan/work",
-    "/BiO/data": {
-        "bind": "/home/jovyan/data",
-        "mode": "ro"
-    }
+```json
+{
+    "ADMIN_PASS": "superduperlongpasswordthatyoucannotremember",
+    "USER_PASS": "arelativelyshorterpassword"
 }
 ```
 
-### 4. Start the JupyterHub server
+Keep in mind that `JupyterHub` employs a lower bound of 24 and 8 characters for admin/user password length, respectively.
 
-#### Configure HTTPS
-
-Edit the caddy's command so that it points to your domain
-
-```yaml
-services:
-  caddy:
-    # Insert a proper domain and point it to your server
-    command: caddy reverse-proxy --from <your domain here> --to  jupyterhub:8000
-```
+#### I don't have a domain
 
 If you really don't have one, comment out the `caddy` service and uncomment the following to the `jupyterhub` service.
 
@@ -101,9 +65,9 @@ services:
       - "8000:8000"
 ```
 
-This will fall back to HTTP.
+This will fall back to HTTP, so I recommend that you don't never handle sensitive data there!
 
-#### Launch the server
+### 4. Start the JupyterHub server
 
 Simply run:
 

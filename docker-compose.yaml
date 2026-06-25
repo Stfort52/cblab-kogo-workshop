@@ -18,6 +18,9 @@ services:
     networks:
       - jupyterhub-network
     restart: always
+    env_file: .env
+    secrets:
+      - password
 
   caddy:
     image: caddy:alpine
@@ -27,11 +30,12 @@ services:
       - "80:80"
       - "443:443"
     # Insert a proper domain and point it to your server
-    command: caddy reverse-proxy --from <your-domain> --to jupyterhub:8000
+    command: caddy reverse-proxy --from $SERVER_ADDR  --to jupyterhub:8000
     networks:
       - jupyterhub-network
     depends_on:
       - jupyterhub
+    env_file: .env
 
 volumes:
   jupyterhub_data:
@@ -39,3 +43,7 @@ volumes:
 networks:
   jupyterhub-network:
     name: jupyterhub-network
+
+secrets:
+  password:
+    file: ./pass.json
