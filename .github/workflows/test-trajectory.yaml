@@ -21,7 +21,7 @@ jobs:
           --memory="8G" \
           --cpus=2.4 \
           -v ${{ github.workspace }}/notebooks:/workspace \
-          -v ${{ env.HOST_DATA_DIR }}:/workspace/data:ro \
+          -v $HOST_DATA_DIR:/workspace/data:ro \
           -w /workspace \
           kogo-scrna-jupyter:latest \
           jupyter nbconvert \
@@ -39,5 +39,5 @@ jobs:
     
     - name: Cleanup Image
       if: always()
-      run: docker rmi scrna-jupyter:latest || true
+      run: docker rmi kogo-scrna-jupyter:latest || true
 
