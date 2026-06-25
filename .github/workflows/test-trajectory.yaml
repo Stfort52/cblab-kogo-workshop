@@ -18,10 +18,10 @@ jobs:
     - name: Run notebook
       run: |
         timeout 1800 docker run --rm \
-          --memory="8g" \
-          --cpus="2.4" \
+          --memory="8G" \
+          --cpus=2.4 \
           -v ${{ github.workspace }}/notebooks:/workspace \
-          -v ${{ github.workspace }}/data:/workspace/data:ro \
+          -v ${{ env.HOST_DATA_DIR }}:/workspace/data:ro \
           -w /workspace \
           kogo-scrna-jupyter:latest \
           jupyter nbconvert \
@@ -36,5 +36,8 @@ jobs:
         name: failed-notebooks
         path: ${{ github.workspace }}/notebooks/*.ipynb
         if-no-files-found: warn
-
+    
+    - name: Cleanup Image
+      if: always()
+      run: docker rmi scrna-jupyter:latest || true
 
