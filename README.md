@@ -1,9 +1,12 @@
 # KOGO Workshop: Single-cell RNA-seq Analysis with R
 
+EN | [KO](./README-ko.md)
+
 ## Introduction
 
-This is designed to serve about ~60 users for a KOGO RNA-seq workshop.
-Check [this link](https://www.kogo-edu.or.kr/workshop/info/7) for the 2026 run.
+This is designed to serve about ~60 users for `[scRNA-seq basics #1] Understanding concepts and analysis` class
+in a [KOGO](https://www.kogo.or.kr) Statistical Genetics and Genomics workshop.
+Check [this link](https://www.kogo-edu.or.kr/workshop/lectureInfo/7/425) for the 2026 run.
 
 ### Structure
 
