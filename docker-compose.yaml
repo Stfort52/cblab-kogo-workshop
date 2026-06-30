@@ -29,7 +29,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    # Insert a proper domain and point it to your server
     command: caddy reverse-proxy --from $SERVER_ADDR  --to jupyterhub:8000
     networks:
       - jupyterhub-network

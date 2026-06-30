@@ -2,7 +2,7 @@ name: scRNA-seq trajectory analysis
 
 on:
   push:
-    branches: ["main"]
+    branches: ["notebooks"]
 
 jobs:
   test:
