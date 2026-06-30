@@ -45,6 +45,7 @@ N_USERS=60
 N_ADMIN=4
 MEM_LIMIT=8G
 CPU_LIMIT=2.0
+THR_LIMIT=2
 SERVER_ADDR=your-server-domain
 ```
 
@@ -54,6 +55,7 @@ SERVER_ADDR=your-server-domain
 - `N_ADMIN`: 관리자 계정의 숫자입니다. 전체 계정 중 `N_ADMIN`개의 계정을 관리자 계정으로 만들게 됩니다. 예를 들어, `N_ADMIN=4`는 `edu01`부터 `edu04` 까지 관리자 권한을 부여합니다.
 - `MEM_LIMIT`: 각각의 수강생들의 컨테이너가 점유할 수 있는 메모리의 상한입니다. [여기](https://docs.docker.com/engine/containers/resource_constraints/#limit-a-containers-access-to-memory)를 참조하여 자세히 알아볼 수 있습니다.
 - `CPU_LIMIT`: 각각의 수강생들의 컨테이너가 동시에 점유할 수 있는 CPU 연산량의 상한입니다. 소숫점을 사용할 수 있는데, 이를테면 2.4는 최대 240%의 CPU 사용량을 허용합니다. 이때 CPU 3개가 80%로 돌아가는지 4개가 60%로 돌아가는지는 신경쓰지 않습니다. 자세히는 [여기](https://docs.docker.com/engine/containers/resource_constraints/#cpu)를 읽어보세요. Docker(와 [CFS](https://docs.kernel.org/scheduler/sched-design-CFS.html))는 기본적으로 CPU 사용량을 *논리적* 코어로 측정한다는 것을 명심하시길 바랍니다 .
+- `THR_LIMIT`: 각 R 커널이 사용할 *쓰레드*의 개수입니다. 이것을 설정하지 않으면, 200%의 `CPU_LIMIT`을 2%씩 100개의 쓰레드에 분산하여 성능 저하를 일으킬 수 있습니다. `MEM_LIMIT` 이나 `CPU_LIMIT`과는 달리 이 제한은 강제되는 것이 아니라 R에 환경 변수로서 제안되는 것입니다. 일반적으로 `THR_LIMIT` * `동시에 돌릴 커널 개수` ~ `CPU_LIMIT` 정도로 설정하는 것을 권장합니다.
 - `SERVER_ADDR`: 서버를 올릴 도메인입니다. 이 주소로 [`caddy`](https://hub.docker.com/_/caddy)가 HTTPS 설정을 진행할 것입니다.
 
 #### 인증 설정

@@ -43,6 +43,7 @@ N_USERS=60
 N_ADMIN=4
 MEM_LIMIT=8G
 CPU_LIMIT=2.0
+THR_LIMIT=2
 SERVER_ADDR=your-server-domain
 ```
 
@@ -52,6 +53,7 @@ SERVER_ADDR=your-server-domain
 - `N_ADMIN`: The number of admin users. This sets the first `N_ADMIN` users as admin, so 4 grants `edu01` to `edu04` admin privilages.
 - `MEM_LIMIT`: The maximum amount of memory each client container can use. "10G" grants 10 gigabytes, more on [this link](https://docs.docker.com/engine/containers/resource_constraints/#limit-a-containers-access-to-memory).
 - `CPU_LIMIT`: The peak CPU utilization for each client container. Can be fractional, so 2.4 grants at most 240% cpu utilization, regardless of 3 CPUs running at 80% or 4 cpus at 60%. More on [this link](https://docs.docker.com/engine/containers/resource_constraints/#cpu). Keep in mind that Docker (and the [CFS](https://docs.kernel.org/scheduler/sched-design-CFS.html) behind it) measures CPUs in *logical* cores.
+- `THR_LIMIT`: The number of *threads* each R kernel will use. With this unset, some libraries might distribute the 200% `CPU_LIMIT` across 100 threads, resulting in suboptimal performance. Unlike `MEM_LIMIT` and `CPU_LIMIT`, this is not enforced but suggested to R via environment variable. We suggest `THR_LIMIT` * `# of concurrent kernels` ~ `CPU_LIMIT`.
 - `SERVER_ADDR`: The domain for your server, used by [`caddy`](https://hub.docker.com/_/caddy) for HTTPS setup.
 
 #### Authentication

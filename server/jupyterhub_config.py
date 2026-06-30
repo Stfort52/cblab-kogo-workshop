@@ -29,6 +29,15 @@ c.DockerSpawner.extra_create_kwargs.update({
     }
 })
 
+# Limit threads in R
+c.DockerSpawner.environment.update({
+    "OMP_NUM_THREADS" : os.environ["THR_LIMIT"],
+    "OPENBLAS_NUM_THREADS" : os.environ["THR_LIMIT"],
+    "MKL_NUM_THREADS" : os.environ["THR_LIMIT"],
+    "VECLIB_MAXIMUM_THREADS" : os.environ["THR_LIMIT"],
+    "NUMEXPR_NUM_THREADS" : os.environ["THR_LIMIT"]
+})
+
 
 c.DockerSpawner.volumes = {
     "jupyterhub-user-{username}": "/home/jovyan/work",
