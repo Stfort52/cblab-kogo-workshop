@@ -1,4 +1,4 @@
-name: scRNA-seq trajectory analysis
+name: scRNA-seq notebooks
 
 on:
   push:
@@ -15,21 +15,49 @@ jobs:
     - name: Build
       run: docker build -t kogo-scrna-jupyter client
 
-    - name: Run notebook
+    - name: Run basic analysis notebook
       run: |
-        timeout 1800 docker run --rm \
+        timeout 1200 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
-          -v ${{ github.workspace }}/notebooks/monocle.ipynb:/home/jovyan/monocle.ipynb \
+          -v ${{ github.workspace }}/notebooks:/home/jovyan/notebooks \
           -v $HOST_DATA_DIR:/home/jovyan/data:ro \
           -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
           kogo-scrna-jupyter:latest \
           jupyter nbconvert \
             --to notebook \
-            --output monocle-out.ipynb \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
             --execute \
-            monocle.ipynb
-    
+            /home/jovyan/notebooks/basic_pipeline.ipynb
+
+
+    - name: Run trajectory notebook
+      run: |
+        timeout 1200 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks:/home/jovyan/notebooks \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/notebooks/monocle.ipynb
+
     - name: Cleanup Image
       if: always()
       run: docker rmi kogo-scrna-jupyter:latest || true
