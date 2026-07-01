@@ -17,7 +17,7 @@ jobs:
 
     - name: Run QC step 2 notebook
       run: |
-        timeout 1200 docker run --rm \
+        timeout 450 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
           -v ${{ github.workspace }}/notebooks/qc2.ipynb:/home/jovyan/qc2.ipynb:ro \
@@ -38,7 +38,7 @@ jobs:
 
     - name: Run basic analysis notebook
       run: |
-        timeout 1200 docker run --rm \
+        timeout 300 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
           -v ${{ github.workspace }}/notebooks/basic_pipeline.ipynb:/home/jovyan/basic_pipeline.ipynb:ro \
@@ -62,7 +62,7 @@ jobs:
 
     - name: Run CCI notebook
       run: |
-        timeout 1200 docker run --rm \
+        timeout 600 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
           -v ${{ github.workspace }}/notebooks/cellchat.ipynb:/home/jovyan/cellchat.ipynb:ro \
@@ -83,7 +83,7 @@ jobs:
 
     - name: Run trajectory notebook
       run: |
-        timeout 1200 docker run --rm \
+        timeout 450 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
           -v ${{ github.workspace }}/notebooks/monocle.ipynb:/home/jovyan/monocle.ipynb:ro \
