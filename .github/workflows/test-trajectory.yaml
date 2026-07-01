@@ -1,4 +1,4 @@
-name: scRNA-seq trajectory analysis
+name: scRNA-seq notebooks
 
 on:
   push:
@@ -15,21 +15,116 @@ jobs:
     - name: Build
       run: docker build -t kogo-scrna-jupyter client
 
-    - name: Run notebook
+    # Switch this to true if you decide to use the QC step 1 practice in future.
+    - name: Run QC step 1 notebook
+      if: false
       run: |
         timeout 1800 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
-          -v ${{ github.workspace }}/notebooks/monocle.ipynb:/home/jovyan/monocle.ipynb \
+          -v ${{ github.workspace }}/notebooks/qc1.ipynb:/home/jovyan/qc1.ipynb:ro \
           -v $HOST_DATA_DIR:/home/jovyan/data:ro \
           -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
           kogo-scrna-jupyter:latest \
           jupyter nbconvert \
             --to notebook \
-            --output monocle-out.ipynb \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
             --execute \
-            monocle.ipynb
-    
+            /home/jovyan/qc1.ipynb
+
+    - name: Run QC step 2 notebook
+      run: |
+        timeout 450 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks/qc2.ipynb:/home/jovyan/qc2.ipynb:ro \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/qc2.ipynb
+
+    - name: Run basic analysis notebook
+      run: |
+        timeout 300 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks/basic_pipeline.ipynb:/home/jovyan/basic_pipeline.ipynb:ro \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/basic_pipeline.ipynb
+
+
+
+
+    - name: Run CCI notebook
+      run: |
+        timeout 600 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks/cellchat.ipynb:/home/jovyan/cellchat.ipynb:ro \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/cellchat.ipynb
+
+    - name: Run trajectory notebook
+      run: |
+        timeout 450 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks/monocle.ipynb:/home/jovyan/monocle.ipynb:ro \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/monocle.ipynb
+
     - name: Cleanup Image
       if: always()
       run: docker rmi kogo-scrna-jupyter:latest || true
