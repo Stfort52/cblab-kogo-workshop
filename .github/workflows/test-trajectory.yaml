@@ -20,7 +20,7 @@ jobs:
         timeout 1200 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
-          -v ${{ github.workspace }}/notebooks:/home/jovyan/notebooks \
+          -v ${{ github.workspace }}/notebooks/basic_pipeline.ipynb:/home/jovyan/basic_pipeline.ipynb:ro \
           -v $HOST_DATA_DIR:/home/jovyan/data:ro \
           -w /home/jovyan \
           -e OMP_NUM_THREADS=2 \
@@ -34,15 +34,42 @@ jobs:
             --output '{notebook_name}-out.ipynb' \
             --output-dir /home/jovyan/work \
             --execute \
-            /home/jovyan/notebooks/basic_pipeline.ipynb
+            /home/jovyan/basic_pipeline.ipynb
 
+#     - name: Run QC notebook
+#       run: |
+#         timeout 1200 docker run --rm \
+#           --memory="8G" \
+#           --cpus=2.4 \
+#           TODO: Fill the rest of the command for running the QC notebook
+
+    - name: RUN CCI notebook
+      run: |
+        timeout 1200 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks/cellchat.ipynb:/home/jovyan/cellchat.ipynb:ro \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/cellchat.ipynb
 
     - name: Run trajectory notebook
       run: |
         timeout 1200 docker run --rm \
           --memory="8G" \
           --cpus=2.4 \
-          -v ${{ github.workspace }}/notebooks:/home/jovyan/notebooks \
+          -v ${{ github.workspace }}/notebooks/monocle.ipynb:/home/jovyan/monocle.ipynb:ro \
           -v $HOST_DATA_DIR:/home/jovyan/data:ro \
           -w /home/jovyan \
           -e OMP_NUM_THREADS=2 \
@@ -56,7 +83,7 @@ jobs:
             --output '{notebook_name}-out.ipynb' \
             --output-dir /home/jovyan/work \
             --execute \
-            /home/jovyan/notebooks/monocle.ipynb
+            /home/jovyan/monocle.ipynb
 
     - name: Cleanup Image
       if: always()
