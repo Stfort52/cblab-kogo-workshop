@@ -43,7 +43,7 @@ jobs:
 #           --cpus=2.4 \
 #           TODO: Fill the rest of the command for running the QC notebook
 
-    - name: RUN CCI notebook
+    - name: Run CCI notebook
       run: |
         timeout 1200 docker run --rm \
           --memory="8G" \
