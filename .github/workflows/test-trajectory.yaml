@@ -15,6 +15,29 @@ jobs:
     - name: Build
       run: docker build -t kogo-scrna-jupyter client
 
+    # Switch this to true if you decide to use the QC step 1 practice in future.
+    - name: Run QC step 1 notebook
+      if: false
+      run: |
+        timeout 1800 docker run --rm \
+          --memory="8G" \
+          --cpus=2.4 \
+          -v ${{ github.workspace }}/notebooks/qc1.ipynb:/home/jovyan/qc1.ipynb:ro \
+          -v $HOST_DATA_DIR:/home/jovyan/data:ro \
+          -w /home/jovyan \
+          -e OMP_NUM_THREADS=2 \
+          -e OPENBLAS_NUM_THREADS=2 \
+          -e MKL_NUM_THREADS=2 \
+          -e VECLIB_MAXIMUM_THREADS=2 \
+          -e NUMEXPR_NUM_THREADS=2 \
+          kogo-scrna-jupyter:latest \
+          jupyter nbconvert \
+            --to notebook \
+            --output '{notebook_name}-out.ipynb' \
+            --output-dir /home/jovyan/work \
+            --execute \
+            /home/jovyan/qc1.ipynb
+
     - name: Run QC step 2 notebook
       run: |
         timeout 450 docker run --rm \
