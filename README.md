@@ -82,6 +82,10 @@ services:
 
 This will fall back to HTTP, so I recommend that you never handle sensitive data there!
 
+#### (Optional) Add a logo
+
+You can add a logo to the top left of the JupyterHub page by changing the placeholder at `server/logo.png`. Why not use the [KOGO logo](https://www.kogo.or.kr/html/user/core/view/reaction/header/357/inc/images/logo.png)?
+
 ### 4. Start the JupyterHub server
 
 Simply run:

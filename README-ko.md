@@ -84,6 +84,10 @@ services:
 
 그리고 도메인 대신 `<서버 IP 주소>:8000`을 사용하시면 됩니다. 다만 이러면 HTTP를 사용하게 되니 민감한 정보는 다루지 않는 편이 좋을지도 모릅니다.
 
+#### (선택 사항) 서버 로고 바꾸기
+
+`server/logo.png`를 바꿔서 원하는 JupyterHub 로고를 설정하실 수 있습니다. 이를테면 [KOGO 로고](https://www.kogo.or.kr/html/user/core/view/reaction/header/357/inc/images/logo.png)를 사용하는 것을 생각해볼 수 있습니다.
+
 ### 4. 서버 시작하기
 
 간단하게:
