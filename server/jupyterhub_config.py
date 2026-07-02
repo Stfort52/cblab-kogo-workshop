@@ -42,7 +42,7 @@ c.DockerSpawner.environment.update({
 c.DockerSpawner.volumes = {
     "jupyterhub-user-{username}": "/home/jovyan/work",
     os.environ["DATA_PATH"]: {
-        "bind": "/home/jovyan/data",
+        "bind": "/home/jovyan/work/data",
         "mode": "ro"
     }
 }
