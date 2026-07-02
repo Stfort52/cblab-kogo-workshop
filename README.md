@@ -17,7 +17,7 @@ This is a [JupyterHub](https://jupyter.org/hub) server serving [JupyterLab](http
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Stfort52/cblab-kogo-workshop.git
+git clone https://github.com/CB-postech/cblab-kogo-workshop.git
 ```
 
 ### 2. Build the client (jupyterlab) Docker image

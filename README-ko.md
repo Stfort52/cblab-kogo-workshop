@@ -19,7 +19,7 @@ Single-cell RNA-seq Analysis with R
 ### 1. 저장소 가져오기
 
 ```bash
-git clone https://github.com/Stfort52/cblab-kogo-workshop.git
+git clone https://github.com/CB-postech/cblab-kogo-workshop.git
 ```
 
 ### 2. 수강생 도커 이미지 (jupyterlab) 빌드하기
