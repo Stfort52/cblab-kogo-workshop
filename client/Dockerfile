@@ -54,6 +54,7 @@ RUN R -e 'options(warn=2);BiocManager::install(c("XVector"), Ncpus = parallel::d
 RUN R -e 'options(warn=2);BiocManager::install(c("DelayedArray", "DelayedMatrixStats", "HDF5Array"), Ncpus = parallel::detectCores())'
 RUN R -e 'options(warn=2);BiocManager::install(c("limma", "lme4", "batchelor", "ggrastr"), Ncpus = parallel::detectCores())'
 RUN R -e 'options(warn=2);BiocManager::install(c("scran", "scater", "DropletUtils", "EnhancedVolcano"), Ncpus = parallel::detectCores())'
+RUN R -e 'options(warn=2);BiocManager::install(c("DESeq2"), Ncpus = parallel::detectCores())'
 
 # Install additional R packages from GitHub
 RUN R -e 'options(warn=2);remotes::install_github("bnprks/BPCells/r")'
