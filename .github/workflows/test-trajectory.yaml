@@ -1,8 +1,11 @@
 name: scRNA-seq notebooks
 
 on:
-  push:
-    branches: ["notebooks"]
+  pull_request:
+    branches:
+      - "notebooks"
+    paths:
+      - "notebooks/**"
 
 jobs:
   test:
